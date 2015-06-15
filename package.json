@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/vcing/u77club",
   "dependencies": {
+    "connect-mongo": "^0.8.1",
     "express.oi": "0.0.19"
   }
 }
