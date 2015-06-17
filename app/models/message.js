@@ -15,7 +15,7 @@ var MessageSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    text: {
+    content: {
         type: String,
         required: true
     },
@@ -25,5 +25,9 @@ var MessageSchema = new mongoose.Schema({
         index: true
     }
 });
+
+MessageSchema.statics.findByRoom = function(id,cb){
+    this.find().populate('sender').sort('-date').exec(cb);
+}
 
 module.exports = mongoose.model('Message', MessageSchema);

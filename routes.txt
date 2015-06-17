@@ -1,0 +1,28 @@
+server
+	room
+		list	{}
+		create	{name,description,private,password}
+		join	{_id}
+		leave	{_id}
+		update	
+		archive
+		users
+	message
+		new		{_id(room._id),content}
+		list	
+
+
+client
+	room
+		list
+		join
+		leave
+		update
+		users
+	message
+		new
+		list
+	system
+		message
+		room
+

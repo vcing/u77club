@@ -8,6 +8,19 @@ function test_list_room(){
 	socket.emit('room:list',{});
 }
 
-function test_join_room(){
-	socket.emit('room:join',{name:'test',_id:'55800d37e25684b76ca0b16f'});
+function test_subscribe_room(){
+	socket.emit('room:subscribe',{_id:'55811420f55c83f7756b8422'});
 }
+
+function test_join_room(){
+	socket.emit('room:join',{name:'test',_id:'55811420f55c83f7756b8422'});
+}
+
+function test_send_message(){
+	socket.emit('message:new',{_id:'55811420f55c83f7756b8422',content:'test message'});
+}
+
+function test_list_message(){
+	socket.emit('message:list',{_id:'55811420f55c83f7756b8422'});
+}
+
