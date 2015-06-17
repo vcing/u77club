@@ -20,7 +20,7 @@ var RoomSchema = new mongoose.Schema({
 		ref: 'User',
         required: true
     },
-    participants: [{ // We can have an array per role
+    users: [{ // We can have an array per role
 		type: ObjectId,
 		ref: 'User'
 	}],
@@ -45,5 +45,15 @@ var RoomSchema = new mongoose.Schema({
         required: false//only for password-protected room
     }
 });
+
+RoomSchema.statics.createRoom = function(options,errorHandle){
+    var room = new this(options);
+    room.save(errorHandle);
+}
+
+RoomSchema.statics.roomList = function(errorHandle){
+    this.find().select('_id name users').populate('users').exec(errorHandle);
+
+}
 
 module.exports = mongoose.model('Room', RoomSchema);
