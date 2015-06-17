@@ -19,6 +19,7 @@ mongoose.connect(settings.mongo.url,options);
 
 // session
 app.io.session({
+	key: 'connect.sid',
 	store:new MongoStore({
 		url:settings.mongo.url
 	}),
