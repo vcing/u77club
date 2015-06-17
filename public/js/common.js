@@ -9,18 +9,22 @@ function test_list_room(){
 }
 
 function test_subscribe_room(){
-	socket.emit('room:subscribe',{_id:'55811420f55c83f7756b8422'});
+	socket.emit('room:subscribe',{_id:'55819ca049d4c3fe7afba875'});
 }
 
 function test_join_room(){
-	socket.emit('room:join',{name:'test',_id:'55811420f55c83f7756b8422'});
+	socket.emit('room:join',{name:'test',_id:'55819ca049d4c3fe7afba875'});
+}
+
+function test_leave_room(){
+	socket.emit('room:leave',{name:'test',_id:'55819ca049d4c3fe7afba875'});
 }
 
 function test_send_message(){
-	socket.emit('message:new',{_id:'55811420f55c83f7756b8422',content:'test message'});
+	socket.emit('message:new',{_id:'55819ca049d4c3fe7afba875',content:'test message'});
 }
 
 function test_list_message(){
-	socket.emit('message:list',{_id:'55811420f55c83f7756b8422'});
+	socket.emit('message:list',{_id:'55819ca049d4c3fe7afba875'});
 }
 
