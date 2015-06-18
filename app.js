@@ -45,13 +45,10 @@ _.map(controllers,function(controller){
 		app:app,
 		middlewares:middlewares,
 		models:models,
-		controllers: controllers
+		controllers: controllers,
+		common: require('./app/common')
 	});
 });
 
-app.get('/',function(req,res,next){
-	req.session.count++;
-	res.send('count:'+req.session.count);
-});
 
 app.listen(80);

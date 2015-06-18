@@ -1,7 +1,11 @@
+var _ = require('lodash');
+
 function user(){
 	var app         = this.app;
 	var middlewares = this.middlewares;
-	var models      = this.models
+	var models      = this.models;
+	var common      = this.common;
+	var onlineList  = common.onlineList;
 
 	// 首页
 	app.get('/', middlewares.requireLogin, function(req,res){
@@ -36,6 +40,8 @@ function user(){
 			}
 		});
 	});
+
+
 }
 
 module.exports = user;

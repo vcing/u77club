@@ -1,11 +1,15 @@
-var _      = require('lodash');
-var common = require('../common');
+var _           = require('lodash');
 
 function room(){
-	var app         = this.app;
-	var middlewares = this.middlewares;
-	var models      = this.models;
-	var type        = 'room';
+	var app          = this.app;
+	var middlewares  = this.middlewares;
+	var models       = this.models;
+	var type         = 'room';
+	var common       = this.common;
+	var addOnline    = common.addOnline;
+	var removeOnline = common.removeOnline;
+	var onlineList   = common.onlineList;
+	var errorHandle  = common.errorHandle;
 
 	app.io.route(type,{
 		create:function(req,res){
@@ -16,19 +20,21 @@ function room(){
 				password:req.param('password') || false,
 				owner:req.session.user
 			}
-			var room = models.room.createRoom(options,common.errorHandle(req,type,function(){
+			var room = models.room.createRoom(options,errorHandle(req,type,function(){
 				res.status(200).json('hehe');
 				req.socket.emit('system:room',{action:'create',_id:room._id,status:0,msg:'ok'});
 			}));
 			
 		},
 		list:function(req,res){
-			var rooms = models.room.roomList(common.errorHandle(req,type,function(rooms){
+			var rooms = models.room.roomList(errorHandle(req,type,function(rooms){
 				req.socket.emit('room:list',rooms);
 			}));
+			req.socket.emit('online:list',JSON.stringify(onlineList()));
+			console.log(onlineList());
 		},
 		join:function(req,res){
-			models.room.findById(req.param('_id')).exec(common.errorHandle(req,type,function(room){
+			models.room.findById(req.param('_id')).exec(errorHandle(req,type,function(room){
 				if(!room){
 					req.socket.emit('system:room','wrong room id');
 					return false;
@@ -51,7 +57,7 @@ function room(){
 			}));
 		},
 		leave:function(req,res){
-			models.room.findById(req.param('_id')).exec(common.errorHandle(req,type,function(room){
+			models.room.findById(req.param('_id')).exec(errorHandle(req,type,function(room){
 				if(!room){
 					req.socket.emit('system:room','wrong room id');
 					return false;
@@ -65,7 +71,7 @@ function room(){
 							return n == req.session.user._id.toString();
 						});
 						room.users = users;
-						room.save(common.errorHandle(req,type,function(){
+						room.save(errorHandle(req,type,function(){
 							req.socket.emit('system:room',{action:'leave',status:0,msg:'ok',_id:room._id});		
 						}));
 					}
@@ -81,31 +87,7 @@ function room(){
 		},
 		subscribe:function(req,res){
 			var is_subscribe = true;
-			// models.room.findById(req.param('_id')).exec(common.errorHandle(req,type,function(room){
-			// 	var users = room.users.toString().split(',');
-			// 	console.log(_.indexOf(users,req.session.user._id));
-			// 	return false;
-			// 	if(!room){
-			// 		req.socket.emit('system:room','wrong room id');
-			// 		return false;
-			// 	}
-			// 	if(room.users){
-			// 		if(_.indexOf(users,req.session.user._id) == -1){
-			// 			is_subscribe = true;
-			// 			room.users.push(req.session.user._id);
-			// 		}else{
-			// 			is_subscribe = false;
-			// 			_.remove(room.users,function(n){
-			// 				return n == req.session.user._id;
-			// 			});
-			// 		}
-			// 	}else{
-			// 		room.users = [req.session.user._id];
-			// 	}
-			// 	room.save(common.errorHandle(req,type));
-			// }));
-			// return false;
-			models.user.findById(req.session.user._id,common.errorHandle(req,type,function(user){
+			models.user.findById(req.session.user._id,errorHandle(req,type,function(user){
 				if(user.rooms){
 					var rooms = user.rooms.toString().split(',');
 					if(_.indexOf(rooms,req.param('_id')) == -1){
@@ -121,7 +103,7 @@ function room(){
 				}else{
 					user.rooms = [req.param('_id')];
 				}
-				user.save(common.errorHandle(req,type,function(){
+				user.save(errorHandle(req,type,function(){
 					req.session.user = user;
 					if(is_subscribe){
 						req.io.route('room:join');
