@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/angular.min.js"></script>
+	<script src="socket.io/socket.io.js"></script>
+	<script src="js/common.js"></script>
 </head>
-<body>
-
+<body ng-app='u77club'>
+	<div ng-controller='roomCtrl'>
+		<h1 ng-bind='title'></h1>
+		<button ng-click='getRoomList()'>房间列表</button>
+		<button ng-click='joinRoom()'>加入房间</button>
+	</div>
 </body>
 </html>

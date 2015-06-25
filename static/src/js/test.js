@@ -1,4 +1,3 @@
-window.socket = io();
 
 function test_create_room(){
 	socket.emit('room:create',{name:'test',description:'test room'});
@@ -12,7 +11,7 @@ function test_subscribe_room(){
 	socket.emit('room:subscribe',{_id:'55819ca049d4c3fe7afba875'});
 }
 
-function test_join_room(){
+function test_join_room(){ 
 	socket.emit('room:join',{name:'test',_id:'55819ca049d4c3fe7afba875'});
 }
 

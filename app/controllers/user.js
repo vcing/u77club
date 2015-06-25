@@ -9,12 +9,14 @@ function user(){
 
 	// 首页
 	app.get('/', middlewares.requireLogin, function(req,res){
-		res.render('index',{user:req.session.user,title:'u77club'});
+		// res.render('index',{user:req.session.user,title:'u77club'});
+		res.redirect('/index.html');
 	});
 
 	// 登陆页
 	app.get('/login', middlewares.requireLogin.redirect, function(req,res){
-		res.render('login',{title:'登陆'});
+		// res.render('login',{title:'登陆'});
+		res.redirect('/index.html');
 	});
 
 	// 登陆操作

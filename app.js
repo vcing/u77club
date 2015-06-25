@@ -37,7 +37,7 @@ app.set('views', './views');
 app.set('view engine', 'ejs');
 
 // publich
-app.use('/static/dest', express.static(__dirname + '/', { maxAge: '364d' }));
+app.use(express.static(__dirname + '/static/dest', { maxAge: '364d' }));
 
 // controllers
 _.map(controllers,function(controller){
