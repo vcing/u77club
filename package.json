@@ -28,5 +28,9 @@
     "ejs": "^2.3.1",
     "express.oi": "0.0.19",
     "lodash": "^3.9.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-sftp": "^0.1.4"
   }
 }
