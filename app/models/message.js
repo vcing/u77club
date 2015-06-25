@@ -26,6 +26,13 @@ var MessageSchema = new mongoose.Schema({
     }
 });
 
+/**
+ * 20150619
+ * 根据room._id 获取消息列表
+ * @param  {int}   id 房间的_id
+ * @param  {Function} cb 回调函数
+ * @return {null}
+ */
 MessageSchema.statics.findByRoom = function(id,cb){
     this.find({room:id}).populate('sender').sort('-date').exec(cb);
 }

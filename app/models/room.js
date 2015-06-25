@@ -46,11 +46,24 @@ var RoomSchema = new mongoose.Schema({
     }
 });
 
+/**
+ * 20150619
+ * 创建房间函数
+ * @param  {obj} options     房间参数
+ * @param  {Function} errorHandle 回调
+ * @return {null}
+ */
 RoomSchema.statics.createRoom = function(options,errorHandle){
     var room = new this(options);
     room.save(errorHandle);
 }
 
+/**
+ * 20150619
+ * 房间列表
+ * @param  {Function} errorHandle 回调
+ * @return {null}
+ */
 RoomSchema.statics.roomList = function(errorHandle){
     this.find().select('_id name users').populate('users').exec(errorHandle);
 

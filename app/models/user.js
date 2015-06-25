@@ -56,6 +56,13 @@ var UserSchema = new mongoose.Schema({
 	}]
 });
 
+/**
+ * 20150619
+ * 认证user
+ * @param  {String} username 用户名
+ * @param  {String} password 密码
+ * @return {Boolean}         是否认证成功
+ */
 UserSchema.statics.auth = function(username,password){
 	var user = this.find({username:username});
 	if(user.password == password){
