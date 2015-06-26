@@ -45,10 +45,14 @@ module.exports = {
 	 * @param {obj} socket socket对象
 	 */
 	addOnline:function(user,socket){
+		socket.emit('user:online',user);
 		if(onlineList[user._id]){
 			onlineList[user._id].push(socket.id);
 		}else{
 			onlineList[user._id] = [socket.id];
+			_.forEach(user.rooms,function(room){
+				socket.emit('room:join',{_id:room});
+			});
 		}
 	},
 	/**
@@ -68,6 +72,9 @@ module.exports = {
 			});
 			if(clients.length == 0){
 				delete onlineList[user._id];
+				_.forEach(user.rooms,function(room){
+					socket.emit('room:leave',{_id:room});
+				});
 			}else{
 				onlineList[user._id] = clients;
 			}

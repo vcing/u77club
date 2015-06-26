@@ -23,6 +23,9 @@ function connection(){
 		socket.on('disconnect',function(){
 			removeOnline(socket.session.user,socket);
 		});
+		socket.on('reconnect',function(){
+			addOnline(socket.session.user,socket);
+		})
 	});
 
 

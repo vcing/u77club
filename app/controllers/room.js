@@ -34,6 +34,7 @@ function room(){
 			console.log(onlineList());
 		},
 		join:function(req,res){
+
 			models.room.findById(req.param('_id')).exec(errorHandle(req,type,function(room){
 				if(!room){
 					req.socket.emit('system:room','wrong room id');
@@ -42,7 +43,7 @@ function room(){
 				if(room.users){
 					var users = room.users.toString().split(',');
 					if(_.indexOf(users,req.session.user._id.toString()) == -1){
-						room.users.push(req.session.user._id);	
+						room.users.push(req.session.user._id);
 					}else{
 						req.socket.join(room._id);
 						req.socket.emit('room:join',req.session.user);

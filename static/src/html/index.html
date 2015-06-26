@@ -8,10 +8,14 @@
 	<script src="js/common.js"></script>
 </head>
 <body ng-app='u77club'>
-	<div ng-controller='testCtrl'>
-		<h1 ng-bind='title'></h1>
-		<button ng-click='getRoomList()'>房间列表</button>
-		<button ng-click='joinRoom()'>加入房间</button>
+	<div ng-controller='dialogTestCtrl'>
+		<button ng-click='joinRoom()'></button>
+		<ul>
+			<li ng-repeat='msg in messages'>
+				<span class="sender" ng-bind='msg.sender.nickname'></span>:
+				<span class="content" ng-bind='msg.content'></span>
+			</li>
+		</ul>
 	</div>
 </body>
 </html>

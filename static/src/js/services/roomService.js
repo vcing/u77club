@@ -1,66 +1,162 @@
 
 app.service('roomList',['socket',function(socket){
-	var _cb;
-	socket.on('room:list',function(data){
-		if(_cb)_cb(data);
-	});	
-	return function(cb){
-		_cb = cb;
-		socket.emit('room:list');
-	};
+	var _cb = {};
+	socket.addListener('room:list',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
+	});
+
+	return {
+		emit:function(options){
+			socket.emit('room:list',options);	
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		}
+	}
 }]);
 
 app.service('roomJoin',['socket',function(socket){
-	var _cb;
-	socket.on('room:join',function(data){
-		if(_cb)_cb(data);
-	})
-	return function(_id,cb){
-		_cb = cb;
-		socket.emit('room:join',{_id:_id});
+	var _cb = {};
+	socket.addListener('room:join',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
+	});
+
+	return {
+		emit:function(options){
+			socket.emit('room:join',options);
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		}
 	}
 }]);
 
 app.service('roomLeave',['socket',function(socket){
-	var _cb;
-	socket.on('room:leave',function(data){
-		if(_cb)_cb(data);
-	})
-	return function(_id,cb){
-		_cb = cb;
-		socket.emit('room:leave',{_id:_id});
+	var _cb = {};
+	socket.addListener('room:leave',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
+	});
+
+	return {
+		emit:function(options){
+			socket.emit('room:leave',options);
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		}
 	}
 }]);
 
 app.service('roomSubscribe',['socket',function(socket){
-	var _cb;
-	socket.on('room:subscribe',function(data){
-		if(_cb)_cb(data);
+	var _cb = {};
+	socket.addListener('room:subscribe',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
 	});
-	return function(_id,cb){
-		_cb = cb;
-		socket.emit('room:subscribe',{_id:_id});
+
+	return {
+		emit:function(options){
+			socket.emit('room:subscribe',options);
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		}
 	}
 }]);
 
 app.service('roomCreate',['socket',function(socket){
-	var _cb;
-	socket.on('room:create',function(data){
-		if(_cb)_cb(data);
+	var _cb = {};
+	socket.addListener('room:create',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
 	});
-	return function(options,cb){
-		_cb = cb;
-		socket.emit('room:create',options);
+
+	return {
+		emit:function(options){
+			socket.emit('room:create',options);
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		}
 	}
 }]);
 
 app.service('roomDelete',['socket',function(socket){
-	var _cb;
-	socket.on('room:delete',function(data){
-		if(_cb)_cb(data);
+	var _cb = {};
+	socket.addListener('room:delete',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
 	});
-	return function(_id,cb){
-		_cb = cb;
-		socket.emit('room:delete',{_id:_id});
+
+	return {
+		emit:function(options){
+			socket.emit('room:delete',options);
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		}
 	}
 }])
