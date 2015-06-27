@@ -6,6 +6,7 @@ function user(){
 	var models      = this.models;
 	var common      = this.common;
 	var onlineList  = common.onlineList;
+	var type        = 'user';
 
 	// 首页
 	app.get('/', middlewares.requireLogin, function(req,res){
@@ -42,6 +43,12 @@ function user(){
 			}
 		});
 	});
+
+	app.io.route(type,{
+		self:function(req,res){
+			req.socket.emit(type+':self',req.session.user);
+		}
+	})
 
 
 }

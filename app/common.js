@@ -14,7 +14,9 @@ module.exports = {
 	errorHandle: function(req,type,cb){
 		return function(err,doc){
 			if(err){
-				req.socket.emit('system:'+type,err);
+				if(req){
+					req.socket.emit('system:'+type,err);	
+				}
 				console.log(err);
 			}else{
 				if(cb)cb(doc);
@@ -41,42 +43,34 @@ module.exports = {
 	/**
 	 * 20150619
 	 * 把user和对应的socket加入在线列表
-	 * @param {obj} user   用户对象
 	 * @param {obj} socket socket对象
 	 */
-	addOnline:function(user,socket){
-		socket.emit('user:online',user);
-		if(onlineList[user._id]){
-			onlineList[user._id].push(socket.id);
+	addOnline:function(socket){
+		socket.emit('user:online',socket.session.user);
+		if(onlineList[socket.session.user._id]){
+			onlineList[socket.session.user._id].push(socket.id);
 		}else{
-			onlineList[user._id] = [socket.id];
-			_.forEach(user.rooms,function(room){
-				socket.emit('room:join',{_id:room});
-			});
+			onlineList[socket.session.user._id] = [socket.id];
 		}
 	},
 	/**
 	 * 20150619
 	 * 把指定socket删除在线列表
 	 * 如果该用户没有更多socket连接
-	 * 则删除该用户
-	 * @param  {obj} user   用户对象
+	 * 则删除该用户 并退出该用户所有订阅的房间
 	 * @param  {obj} socket socket对象
 	 * @return {null}
 	 */
-	removeOnline:function(user,socket){
-		if(onlineList[user._id]){
-			var clients = onlineList[user._id];
+	removeOnline:function(socket){
+		if(onlineList[socket.session.user._id]){
+			var clients = onlineList[socket.session.user._id];
 			_.remove(clients,function(n){
 				return n == socket.id;
 			});
 			if(clients.length == 0){
-				delete onlineList[user._id];
-				_.forEach(user.rooms,function(room){
-					socket.emit('room:leave',{_id:room});
-				});
+				delete onlineList[socket.session.user._id];
 			}else{
-				onlineList[user._id] = clients;
+				onlineList[socket.session.user._id] = clients;
 			}
 		}else{
 			console.log(' wtf ');

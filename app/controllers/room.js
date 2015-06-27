@@ -31,10 +31,8 @@ function room(){
 				req.socket.emit('room:list',rooms);
 			}));
 			req.socket.emit('online:list',JSON.stringify(onlineList()));
-			console.log(onlineList());
 		},
 		join:function(req,res){
-
 			models.room.findById(req.param('_id')).exec(errorHandle(req,type,function(room){
 				if(!room){
 					req.socket.emit('system:room','wrong room id');
@@ -52,7 +50,7 @@ function room(){
 				}else{
 					room.users = [req.session.user._id];
 				}
-				room.save(req,type);
+				room.save();
 				req.socket.join(room._id);
 				app.io.to(room._id).emit('room:join',req.session.user);
 			}));
@@ -79,6 +77,7 @@ function room(){
 				}else{
 					req.socket.emit('system:room','no user in this room');
 				}
+				room.save();
 				req.socket.leave(room._id);
 				app.io.to(room._id).emit('room:leave',req.session.user);
 			}));
@@ -106,6 +105,8 @@ function room(){
 				}
 				user.save(errorHandle(req,type,function(){
 					req.session.user = user;
+					req.session.save();
+					// req.socket.session.user = user;
 					if(is_subscribe){
 						req.io.route('room:join');
 					}else{

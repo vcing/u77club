@@ -18,14 +18,104 @@ function connection(){
 	 * @return {null}
 	 */
 	app.io.on('connection',function(socket){
+
 		var socket = socket;
-		addOnline(socket.session.user,socket);
+		var _onlineList = onlineList();
+
+		if(!_onlineList[socket.session.user._id]){
+			_.forEach(socket.session.user.rooms,function(room){
+				models.room.findById(room).exec(errorHandle(null,type,function(room){
+					if(!room){
+						socket.emit('system:room','wrong room id');
+						return false;
+					}
+					if(room.users.length != 0){
+						var users = room.users.toString().split(',');
+						if(_.indexOf(users,socket.session.user._id.toString()) == -1){
+							room.users.push(socket.session.user._id);
+						}else{
+							socket.join(room._id);
+							socket.emit('room:join',socket.session.user);
+							return true;
+						}
+					}else{
+						room.users = [socket.session.user._id];
+					}
+					room.save();
+					socket.join(room._id);
+					app.io.to(room._id).emit('room:join',socket.session.user);
+				}));
+			});
+		}
+
+		addOnline(socket);
+		
 		socket.on('disconnect',function(){
-			removeOnline(socket.session.user,socket);
+			
+			removeOnline(socket);
+			var _onlineList = onlineList();
+			if(!_onlineList[socket.session.user._id]){
+				_.forEach(socket.session.user.rooms,function(room){
+					models.room.findById(room).exec(errorHandle(null,type,function(room){
+						if(!room){
+							socket.emit('system:room','wrong room id');
+							return false;
+						}
+						if(room.users){
+							var users = room.users.toString().split(',');
+							if(_.indexOf(users,socket.session.user._id.toString()) == -1){
+								socket.emit('system:room','you are not in this room already');	
+							}else{
+								_.remove(users,function(n){
+									return n == socket.session.user._id.toString();
+								});
+								room.users = users;
+								room.save(errorHandle(null,type,function(){
+									socket.emit('system:room',{action:'leave',status:0,msg:'ok',_id:room._id});		
+								}));
+							}
+						}else{
+							socket.emit('system:room','no user in this room');
+						}
+						room.save();
+						socket.leave(room._id);
+						app.io.to(room._id).emit('room:leave',socket.session.user);
+					}));
+				});	
+			}
+			
 		});
 		socket.on('reconnect',function(){
-			addOnline(socket.session.user,socket);
-		})
+			var socket = socket;
+			var _onlineList = onlineList();
+
+			if(!_onlineList[socket.session.user._id]){
+				_.forEach(socket.session.user.rooms,function(room){
+					models.room.findById(room).exec(errorHandle(null,type,function(room){
+						if(!room){
+							socket.emit('system:room','wrong room id');
+							return false;
+						}
+						if(room.users){
+							var users = room.users.toString().split(',');
+							if(_.indexOf(users,socket.session.user._id.toString()) == -1){
+								room.users.push(socket.session.user._id);
+							}else{
+								socket.join(room._id);
+								socket.emit('room:join',socket.session.user);
+								return true;
+							}
+						}else{
+							room.users = [socket.session.user._id];
+						}
+						room.save();
+						socket.join(room._id);
+						app.io.to(room._id).emit('room:join',socket.session.user);
+					}));
+				});
+			}
+			addOnline(socket);
+		});
 	});
 
 

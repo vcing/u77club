@@ -39,6 +39,17 @@ app.set('view engine', 'ejs');
 // publich
 app.use(express.static(__dirname + '/static/dest', { maxAge: '364d' }));
 
+
+
+// 清空房间在线列表
+models.room.find({}).exec(function(err,docs){
+	_.forEach(docs,function(doc){
+		doc.users = [];
+		doc.save();
+	});
+});
+
+
 // controllers
 _.map(controllers,function(controller){
 	controller.apply({

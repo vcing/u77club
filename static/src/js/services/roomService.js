@@ -1,7 +1,9 @@
 
 app.service('roomList',['socket',function(socket){
+	var _list = [];
 	var _cb = {};
 	socket.addListener('room:list',function(data){
+		_list = data;
 		angular.forEach(_cb,function(cb){
 			cb(data);
 		});
@@ -22,6 +24,9 @@ app.service('roomList',['socket',function(socket){
 				delete _cb[name];
 				cb(data);
 			}
+		},
+		list:function(){
+			return _list;
 		}
 	}
 }]);
@@ -159,4 +164,36 @@ app.service('roomDelete',['socket',function(socket){
 			}
 		}
 	}
-}])
+}]);
+
+app.service('roomUserList',['socket',function(socket){
+	var _list = [];
+	var _cb = {};
+	socket.addListener('room:list',function(data){
+		_list = data;
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
+	});
+
+	return {
+		emit:function(options){
+			socket.emit('room:list',options);
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		on:function(name,cb){
+			_cb[name] = function(data){
+				delete _cb[name];
+				cb(data);
+			}
+		},
+		list:function(){
+			return _list;
+		}
+	}
+}]);
