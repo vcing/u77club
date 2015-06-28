@@ -3,18 +3,20 @@ app.controller('dialogTestCtrl',
 	function($scope,messageList,messageNew,roomJoin,roomLeave,roomSubscribe,userSelf,roomUserList,roomList){
 
 		var _name = 'dialogTestCtrl';
-		messageList.addListener(_name,function(data){
-
-			console.log(data);
+		messageList.addListener(_name,'55819ca049d4c3fe7afba875',function(data){
 			$scope.messages = data;
-		});
-
-		roomJoin.addListener(_name,function(data){
-			// alert(data.nickname+' join room');
 			console.log(data);
 		});
 
-		roomLeave.addListener(_name,function(data){
+		$scope.sendMessage = function(){
+			messageNew.emit({_id:'55819ca049d4c3fe7afba875',content:$scope.content});			
+		}
+		
+		roomJoin.addListener(_name,'55819ca049d4c3fe7afba875',function(data){
+			console.log(data);
+		});
+
+		roomLeave.addListener(_name,'55819ca049d4c3fe7afba875',function(data){
 			console.log(data);
 		});
 

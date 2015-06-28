@@ -34,7 +34,7 @@ app.service('roomList',['socket',function(socket){
 app.service('roomJoin',['socket',function(socket){
 	var _cb = {};
 	socket.addListener('room:join',function(data){
-		angular.forEach(_cb,function(cb){
+		angular.forEach(_cb[data._id],function(cb){
 			cb(data);
 		});
 	});
@@ -43,15 +43,17 @@ app.service('roomJoin',['socket',function(socket){
 		emit:function(options){
 			socket.emit('room:join',options);
 		},
-		addListener:function(name,cb){
-			_cb[name] = cb;
+		addListener:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id] = {};
+			_cb[_id][name] = cb;
 		},
-		removeListener:function(name){
-			delete _cb[name];
+		removeListener:function(name,_id){
+			delete _cb[_id][name];
 		},
-		on:function(name,cb){
-			_cb[name] = function(data){
-				delete _cb[name];
+		on:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id] = {};
+			_cb[_id][name] = function(data){
+				delete _cb[_id][name];
 				cb(data);
 			}
 		}
@@ -61,7 +63,7 @@ app.service('roomJoin',['socket',function(socket){
 app.service('roomLeave',['socket',function(socket){
 	var _cb = {};
 	socket.addListener('room:leave',function(data){
-		angular.forEach(_cb,function(cb){
+		angular.forEach(_cb[data._id],function(cb){
 			cb(data);
 		});
 	});
@@ -70,15 +72,17 @@ app.service('roomLeave',['socket',function(socket){
 		emit:function(options){
 			socket.emit('room:leave',options);
 		},
-		addListener:function(name,cb){
-			_cb[name] = cb;
+		addListener:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id] = {};
+			_cb[_id][name] = cb;
 		},
-		removeListener:function(name){
-			delete _cb[name];
+		removeListener:function(name,_id){
+			delete _cb[_id][name];
 		},
-		on:function(name,cb){
-			_cb[name] = function(data){
-				delete _cb[name];
+		on:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id] = {};
+			_cb[_id][name] = function(data){
+				delete _cb[_id][name];
 				cb(data);
 			}
 		}

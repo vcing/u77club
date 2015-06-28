@@ -19,25 +19,32 @@ function message(){
 				sender:req.session.user._id,
 				content:req.param('content')
 			}
+			var msg = new models.message(options);
+			msg.save(errorHandle(req,type,function(){
+				app.io.to(req.param('_id')).emit(type+':new',{
+					sender:req.session.user,
+					room:msg.room,
+					date:msg.date,
+					content:msg.content,
+					_id:msg._id
+				});
+			}));
 			models.room.findById(req.param('_id'),errorHandle(req,type,function(room){
 				if(!room){
 					req.socket.emit('system:'+type,'请先选择房间');
 					return false;
 				}
-				var msg = new models.message(options);
-				msg.save(errorHandle(req,type));
 				if(room.messages){
 					room.messages.push(msg._id);
 				}else{
 					room.messages = [msg._id];
 				}
 				room.save(errorHandle(req,type));
-				app.io.to(room._id).emit(type+':new',msg);
 			}));
 		},
 		list:function(req,res){
 			models.message.findByRoom(req.param('_id'),errorHandle(req,type,function(messages){
-				req.socket.emit(type+':list',messages);
+				req.socket.emit(type+':list',{_id:req.param('_id'),messages:messages});
 			}));
 		},
 		private:function(req,res){
