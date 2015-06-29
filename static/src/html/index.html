@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="lib/jquery.min.js"></script>
-	<script src="lib/angular.min.js"></script>
-	<script src="socket.io/socket.io.js"></script>
-	<script src="lib/angular-socket.js"></script>
-	<script src="js/common.js"></script>
+	<script src="/lib/jquery.min.js"></script>
+	<script src="/lib/angular.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/lib/angular-socket.js"></script>
+	<script src="/lib/angular-ui-router.min.js"></script>
+	<script src="/lib/bootstrap.min.js"></script>
+	<script src="/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
+	<script src="/lib/ace.js"></script>
+	<script src="/lib/ui-ace.min.js"></script>
+	<script src="/js/common.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body ng-app='u77club'>
-	<div ng-controller='dialogTestCtrl'>
-		<button ng-click='joinRoom()'>加入房间</button>
-		<button ng-click='roomUserList()'>在线列表</button>
-		<button ng-click='getSelf()'>用户信息</button>
-		<button ng-click='getRoomList()'>房间列表</button>
-		<button ng-click='getRoomList2()'>房间列表2</button>
-		<ul>
-			<li ng-repeat='msg in messages'>
-				<span class="sender" ng-bind='msg.sender.nickname'></span>:
-				<span class="content" ng-bind='msg.content'></span>
-			</li>
-		</ul>
-		<input ng-model='content'><button ng-click='sendMessage()'>发送</button>
-	</div>
+<div id='u77club' ui-view='main'>
+	
+</div>
 </body>
 </html>

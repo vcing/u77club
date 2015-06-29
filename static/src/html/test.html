@@ -1,11 +1,26 @@
-<script src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src='/js/common.js'></script>
-<a onclick='test_create_room()'>测试创建房间</a>
-<a onclick='test_join_room()'>测试加入房间</a>
-<a onclick='test_leave_room()'>测试离开房间</a>
-<a onclick='test_list_room()'>测试房间列表</a>
-<a onclick='test_send_message()'>测试发消息</a>
-<a onclick='test_private_message()'>测试私聊消息</a>
-<a onclick='test_list_message()'>测试消息列表</a>
-<a onclick='test_subscribe_room()'>测试订阅房间</a>
-<a onclick='test_list_connection()'>测试在线列表</a>
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/angular.min.js"></script>
+	<script src="socket.io/socket.io.js"></script>
+	<script src="lib/angular-socket.js"></script>
+	<script src="js/common.js"></script>
+</head>
+<body ng-app='u77club'>
+	<div ng-controller='dialogTestCtrl'>
+		<button ng-click='joinRoom()'>加入房间</button>
+		<button ng-click='roomUserList()'>在线列表</button>
+		<button ng-click='getSelf()'>用户信息</button>
+		<button ng-click='getRoomList()'>房间列表</button>
+		<button ng-click='getRoomList2()'>房间列表2</button>
+		<ul>
+			<li ng-repeat='msg in messages'>
+				<span class="sender" ng-bind='msg.sender.nickname'></span>:
+				<span class="content" ng-bind='msg.content'></span>
+			</li>
+		</ul>
+		<input ng-model='content'><button ng-click='sendMessage()'>发送</button>
+	</div>
+</body>
+</html>

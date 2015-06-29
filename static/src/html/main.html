@@ -1,0 +1,23 @@
+<div class="sidebar" ng-controller='sideBarCtrl'>
+		
+</div>
+<div class='main' ui-view='content' >
+	<div class="wrap">
+		<div class="header">所有房间</div>
+		<ul class='list'>
+			<li class='item' ng-repeat='room in roomList'>
+				<div class='top' ui-sref='room({roomId:room._id})'>
+					{{room.name}}
+				</div>
+				<div class="description">
+					{{room.description}}
+				</div>
+				<ul class="users">
+					<li class="user">
+						<img class='avatar' src="http://img.u77.com/avatar/u77_avatar.jpg!avatar">
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>

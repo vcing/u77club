@@ -1,0 +1,19 @@
+<div class="room">
+	<div class="chat">
+		<div class="header col-xs-12">房间名</div>	
+		<ul class="messages">
+			<li class="message" ng-repeat='message in messageList'>
+				<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar">
+				<div class="content">
+					<span class='name'>{{message.sender.nickname}}</span>
+					<span class='time'>{{message.date}}</span>
+					<div class="text">{{message.content}}</div>
+				</div>
+			</li>
+		</ul>
+		<div class="editor">
+			<textarea class="input" ng-model='text'></textarea>
+			<button type="submit" class="btn btn-info submit" ng-click='send()'>发送</button>
+		</div>
+	</div>
+</div>

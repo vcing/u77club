@@ -65,7 +65,7 @@ RoomSchema.statics.createRoom = function(options,errorHandle){
  * @return {null}
  */
 RoomSchema.statics.roomList = function(errorHandle){
-    this.find().select('_id name users').populate('users').exec(errorHandle);
+    this.find().select('_id name users description private lastActive').populate('users').exec(errorHandle);
 
 }
 

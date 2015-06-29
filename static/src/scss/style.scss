@@ -1,1 +1,308 @@
-$test : 'test';
+%block-no-margin-padding{
+	margin:0;
+	padding:0;
+	display:block;
+}
+
+#u77club{
+	background: #222;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flexbox;
+	display: -ms-flex;
+	display: flex;
+	-moz-flex-direction: row;
+	-webkit-box-direction: normal;
+	-moz-box-direction: normal;
+	-webkit-box-orient: horizontal;
+	-moz-box-orient: horizontal;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+	flex-direction: row;
+	-webkit-transition: -webkit-transform 0.1s ease;
+	-moz-transition: -moz-transform 0.1s ease;
+	-ms-transition: -ms-transform 0.1s ease;
+	transition: transform .1s ease;
+
+	.sidebar{
+		background:#222;
+		position:relative;
+		width:200px;
+		height:100%;
+		display: -webkit-flex;
+		display: -moz-flex;
+		display: -ms-flexbox;
+		display: -ms-flex;
+		display: flex;
+		-moz-flex-direction: column;
+		-webkit-box-direction: normal;
+		-moz-box-direction: normal;
+		-webkit-box-orient: vertical;
+		-moz-box-orient: vertical;
+		-webkit-flex-direction: column;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		border-right: 1px #333 solid;
+	}
+	.main{
+		-moz-flex: 1;
+		-webkit-box-flex: 1;
+		-moz-box-flex: 1;
+		-webkit-flex: 1;
+		-ms-flex: 1;
+		flex: 1;
+		display: -webkit-flex;
+		display: -moz-flex;
+		display: -ms-flexbox;
+		display: -ms-flex;
+		box-sizing: border-box;
+		.room{
+			-moz-flex: 1;
+			-webkit-box-flex: 1;
+			-moz-box-flex: 1;
+			-webkit-flex: 1;
+			-ms-flex: 1;
+			flex: 1;
+			display: -webkit-flex;
+			display: -moz-flex;
+			display: -ms-flexbox;
+			display: -ms-flex;
+			display: flex;
+			-webkit-transition: -webkit-transform 0.1s ease;
+			-moz-transition: -moz-transform 0.1s ease;
+			-ms-transition: -ms-transform 0.1s ease;
+			transition: transform .1s ease;
+			margin: 10px;
+			border: 1px #111 solid;
+			border-radius: 2px;
+			background:#fff;
+			.chat{
+				-moz-flex: 1;
+				-webkit-box-flex: 1;
+				-moz-box-flex: 1;
+				-webkit-flex: 1;
+				-ms-flex: 1;
+				flex: 1;
+				display: -webkit-flex;
+				display: -moz-flex;
+				display: -ms-flexbox;
+				display: -ms-flex;
+				display: flex;
+				-moz-flex-direction: column;
+				-webkit-box-direction: normal;
+				-moz-box-direction: normal;
+				-webkit-box-orient: vertical;
+				-moz-box-orient: vertical;
+				-webkit-flex-direction: column;
+				-ms-flex-direction: column;
+				flex-direction: column;
+
+				.header{
+					background: #fff;
+					min-height: 46px;
+					padding: 10px;
+					border-bottom: 1px #ddd solid;
+					position: relative;
+					border-radius: 2px 2px 0 0;
+					box-shadow: 0 4px 5px -5px rgba(0, 0, 0, 0.1);
+					z-index: 1000;
+				}
+
+				.messages{
+					background: #fff;
+					padding: 0;
+					margin: 0;
+					overflow: auto;
+					-webkit-overflow-scrolling: touch;
+					-moz-flex: 1 0 0;
+					-webkit-box-flex: 1;
+					-moz-box-flex: 1;
+					-webkit-flex: 1 0 0;
+					-ms-flex: 1 0 0;
+					flex: 1 0 0;
+					-webkit-transform: translate3d(0, 0, 0);
+					-moz-transform: translate3d(0, 0, 0);
+					-ms-transform: translate3d(0, 0, 0);
+					-o-transform: translate3d(0, 0, 0);
+					transform: translate3d(0, 0, 0);
+
+					.message{
+						min-height: 47px;
+						border-top: 1px #eee solid;
+						padding: 7px;
+						font-size: 13px;
+						margin: 0;
+						display: block;
+						position: relative;
+
+						.avatar{
+							position: absolute;
+							border-radius: 100%;
+							width: 30px;
+						}
+
+						.content{
+							margin-left: 40px;
+
+							.name{
+								color: #666;
+								font-weight: 700;
+								margin-bottom: 5px;
+								display: block;
+							}
+
+							.time{
+								color: #bbb;
+								position: absolute;
+								top: 7px;
+								right: 7px;
+							}
+
+							.text{
+								word-wrap: break-word;
+							}
+						}
+					}
+
+					.message:first-child{
+						border-top:none;
+					}
+				}
+
+				.editor{
+					height: 70px;
+					border-top: 1px #eee solid;
+					display: -webkit-flex;
+					display: -moz-flex;
+					display: -ms-flexbox;
+					display: -ms-flex;
+					display: flex;
+
+					.input{
+						max-height: 100%;
+						padding: 15px;
+						border: none;
+						border-radius: 0 0 0 2px;
+						resize: none;
+						-moz-flex: 1;
+						-webkit-box-flex: 1;
+						-moz-box-flex: 1;
+						-webkit-flex: 1;
+						-ms-flex: 1;
+						flex: 1;
+					}
+
+					.submit{
+						padding-left: 20px;
+						padding-right: 20px;
+						border-radius: 0;
+						border-radius: 0 0 2px 0;
+					}
+				}
+			}
+		}
+
+		.wrap{
+			background: #fff;
+			-moz-flex: 1;
+			-webkit-box-flex: 1;
+			-moz-box-flex: 1;
+			-webkit-flex: 1;
+			-ms-flex: 1;
+			flex: 1;
+			display: -webkit-flex;
+			display: -moz-flex;
+			display: -ms-flexbox;
+			display: -ms-flex;
+			display: flex;
+			-moz-flex-direction: column;
+			-webkit-box-direction: normal;
+			-moz-box-direction: normal;
+			-webkit-box-orient: vertical;
+			-moz-box-orient: vertical;
+			-webkit-flex-direction: column;
+			-ms-flex-direction: column;
+			flex-direction: column;
+			margin: 10px;
+			border: 1px #111 solid;
+			border-radius: 2px;
+
+			.header{
+				min-height: 50px;
+				max-height: 50px;
+				padding: 8px 12px;
+				border-bottom: 1px #ddd solid;
+				position: relative;
+				box-shadow: 0 4px 5px -5px rgba(0, 0, 0, 0.1);
+				display: -webkit-flex;
+				display: -moz-flex;
+				display: -ms-flexbox;
+				display: -ms-flex;
+				display: flex;
+				-moz-flex-direction: row;
+				-webkit-box-direction: normal;
+				-moz-box-direction: normal;
+				-webkit-box-orient: horizontal;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;
+			}
+
+			.list{
+				overflow-y: auto;
+				-webkit-overflow-scrolling: touch;
+				-webkit-transform: translate3d(0, 0, 0);
+				-moz-transform: translate3d(0, 0, 0);
+				-ms-transform: translate3d(0, 0, 0);
+				-o-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+				@extend %block-no-margin-padding;
+			}
+
+			.item{
+				color: #777;
+				position: relative;
+				padding: 10px 15px;
+				margin-bottom: 5px;
+				border-bottom: 1px #f2f2f2 solid;
+				overflow: hidden;
+				@extend %block-no-margin-padding;
+
+				.top{
+					padding-right: 60px;
+				}
+
+				.description{
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+
+				.users{
+					margin-top: 5px;
+					margin-left: -2px;
+					overflow: hidden;
+					padding:0;
+
+					.user{
+						margin: 2px;
+						display: block;
+						float: left;
+
+						.avatar{
+							width: 30px;
+							height: 30px;
+							border-radius: 100%;
+						}
+					}
+				}
+			}
+		}		
+	}
+}

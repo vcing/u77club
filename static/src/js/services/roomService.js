@@ -19,6 +19,13 @@ app.service('roomList',['socket',function(socket){
 		removeListener:function(name){
 			delete _cb[name];
 		},
+		checkListener:function(name){
+			if(_cb[name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
 		on:function(name,cb){
 			_cb[name] = function(data){
 				delete _cb[name];
