@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="/lib/jquery.min.js"></script>
-	<script src="/lib/angular.min.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/lib/angular-socket.js"></script>
 	<script src="/lib/angular-ui-router.min.js"></script>
@@ -17,6 +17,6 @@
 </head>
 <body ng-app='u77club'>
 <div id='u77club' ui-view='main'></div>
-<div ng-include="'/room/create.html'"></div>
+<div create-room></div>
 </body>
 </html>
