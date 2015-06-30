@@ -1,3 +1,43 @@
+app.service('roomInfo',['socket',function(socket){
+	var _list = {};
+	var _cb = {};
+	socket.addListener('room:info',function(data){
+		_list[data._id] = data;
+		angular.forEach(_cb[data._id],function(cb){
+			cb(data);
+		});
+	});
+
+	return {
+		emit:function(options){
+			socket.emit('room:info',options);	
+		},
+		addListener:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id]={};
+			_cb[_id][name] = cb;
+		},
+		removeListener:function(name,_id){
+			delete _cb[_id][name];
+		},
+		checkListener:function(name,_id){
+			if(_cb[_id] && _cb[_id][name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
+		on:function(name,_id,cb){
+			_cb[_id][name] = function(data){
+				delete _cb[_id][name];
+				cb(data);
+			}
+		},
+		info:function(_id){
+			return _list[_id];
+		}
+	}
+}]);
+
 
 app.service('roomList',['socket',function(socket){
 	var _list = [];

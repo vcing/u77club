@@ -4,5 +4,6 @@ app.controller('sideBarCtrl',['$scope','$stateParams',function($scope,$statePara
 	}else{
 		console.log('loading side bar');	
 	}
+	$scope.a = 'b';
 	
 }]); 

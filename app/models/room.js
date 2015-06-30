@@ -55,7 +55,9 @@ var RoomSchema = new mongoose.Schema({
  */
 RoomSchema.statics.createRoom = function(options,errorHandle){
     var room = new this(options);
-    room.save(errorHandle);
+    room.save(function(err){
+        errorHandle(err,room);
+    });
 }
 
 /**

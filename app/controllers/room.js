@@ -20,14 +20,19 @@ function room(){
 				password:req.param('password') || false,
 				owner:req.session.user
 			}
-			var room = models.room.createRoom(options,errorHandle(req,type,function(){
+			models.room.createRoom(options,errorHandle(req,type,function(room){
 				res.status(200).json('hehe');
-				req.socket.emit('system:room',{action:'create',_id:room._id,status:0,msg:'ok'});
+				req.socket.emit('room:create',{action:'create',_id:room._id,status:0,msg:'ok'});
 			}));
 			
 		},
+		info:function(req,res){
+			models.room.findById(req.param('_id')).exec(errorHandle(req,type,function(room){
+				req.socket.emit('room:info',room);
+			}));
+		},
 		list:function(req,res){
-			var rooms = models.room.roomList(errorHandle(req,type,function(rooms){
+			models.room.roomList(errorHandle(req,type,function(rooms){
 				req.socket.emit('room:list',rooms);
 			}));
 			req.socket.emit('online:list',JSON.stringify(onlineList()));

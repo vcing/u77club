@@ -7,17 +7,16 @@
 	<script src="/lib/angular-socket.js"></script>
 	<script src="/lib/angular-ui-router.min.js"></script>
 	<script src="/lib/bootstrap.min.js"></script>
-	<script src="/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
-	<script src="/lib/ace.js"></script>
-	<script src="/lib/ui-ace.min.js"></script>
+	<!-- <script src="/lib/ui-bootstrap-tpls-0.13.0.min.js"></script> -->
+	<!-- <script src="/lib/ace.js"></script> -->
+	<!-- <script src="/lib/ui-ace.min.js"></script> -->
 	<script src="/js/common.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body ng-app='u77club'>
-<div id='u77club' ui-view='main'>
-	
-</div>
+<div id='u77club' ui-view='main'></div>
+<div ng-include="'/room/create.html'"></div>
 </body>
 </html>

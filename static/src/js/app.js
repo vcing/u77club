@@ -1,7 +1,11 @@
-var app = angular.module('u77club',['btford.socket-io','ui.router','ui.bootstrap']);
+var app = angular.module('u77club',['btford.socket-io','ui.router']);
 
 app.service('socket',['socketFactory',function(socketFactory){
-	return socketFactory();
+	var socket = socketFactory();
+	socket.on('system:nologin',function(){
+		window.location.href='/login.html';
+	});
+	return socket;
 }]);
 
 
@@ -10,26 +14,31 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$urlRo
 	$urlRouterProvider.otherwise('/');
 	$stateProvider
 		.state('main',{
-			url: "/",
+			url:'/',
 			views:{
-				'main@':{
+				'main':{
 					templateUrl:'main.html',
 					controller:'roomListCtrl',
 				}
 			}
 		})
-		.state('room',{
-			url:'/room/:roomId',
-			// templateUrl:'room/room.html',
+		.state('main.room',{
+			url:'room/:roomId',
 			views:{
-				'main@':{
-					templateUrl:'main.html',
-				},
-				'content@room':{
+				'content':{
 					templateUrl:'room/room.html',
 					controller:'roomCtrl',
 				}
 			}
 		})
+		// .state('main.createroom',{
+		// 	url:'createroom',
+		// 	views:{
+		// 		'dialog':{
+		// 			templateUrl:'room/create.html',
+		// 			controller:'roomAddCtrl'
+		// 		}
+		// 	}
+		// })
 
 }]);

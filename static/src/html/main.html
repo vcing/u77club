@@ -1,12 +1,21 @@
-<div class="sidebar" ng-controller='sideBarCtrl'>
-		
+
+<div class="sidebar" side-bar>
+
 </div>
 <div class='main' ui-view='content' >
 	<div class="wrap">
-		<div class="header">所有房间</div>
+		<div class="header">
+			<h2>所有房间</h2>
+			<div class="search">
+				<label for='search-input'><i class="fa fa-search"></i></label>
+				<input id="search-input" type='search' autofocus></input>
+			</div>
+			 <!-- ui-sref='main.createroom' -->
+			<a class="new btn btn-success" ng-click='showCreateRoom()'><i class="fa fa-plus"></i></a>
+		</div>
 		<ul class='list'>
 			<li class='item' ng-repeat='room in roomList'>
-				<div class='top' ui-sref='room({roomId:room._id})'>
+				<div class='top' ui-sref='main.room({roomId:room._id})'>
 					{{room.name}}
 				</div>
 				<div class="description">

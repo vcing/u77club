@@ -23,7 +23,6 @@ app.service('messageList',['socket',function(socket){
 		if(data.messages){
 			_list[data._id] = data.messages;	
 		}
-		console.log(_list);
 		angular.forEach(_cb[data._id],function(cb){
 			cb(_list[data._id]);
 		});
