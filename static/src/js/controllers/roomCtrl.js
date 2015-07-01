@@ -1,14 +1,32 @@
-app.controller('roomListCtrl',['$scope','$stateParams','roomList',
-	function($scope,$stateParams,roomList){
+app.controller('roomListCtrl',['$scope','$stateParams','roomList','userSelf','socket','roomSubscribe',
+	function($scope,$stateParams,roomList,userSelf,socket,roomSubscribe){
 	var _name = 'roomlistCtrl';
 	if(roomList.checkListener(_name)){
 		$scope.roomList = roomList.list();
 	}else{
 		roomList.addListener(_name,function(data){
+			angular.forEach(data,function(room){
+				if($.inArray(room._id,userSelf.self().rooms) != -1){
+					room.isSubscribe = true;
+				}
+			});
 			$scope.roomList = data;
 		});
 		roomList.emit();
 	}
+
+	$scope.toggleSubscript = function(_id){
+		
+		roomSubscribe.on(_name,function(data){
+			socket.emit('user:self');
+		});
+		userSelf.on(_name,function(data){
+			socket.emit('room:list',{});	
+		});
+		socket.emit('room:subscribe',{_id:_id});
+		return true;
+	}
+
 	$scope.showCreateRoom = function(){
 		$('#create-room').modal('show');
 	}
@@ -48,18 +66,17 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state',
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe',
-	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe){
+app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList',
+	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList){
 		var _self = userSelf.self();
 		var _name = 'roomCtrl';
 		var roomId = $stateParams.roomId;
-
 		// join room
-
 		if($.inArray(roomId,_self.rooms) == -1){
 			roomSubscribe.emit({_id:roomId});
 			_self.rooms.unshift(roomId);
 			userSelf.setSelf(_self);
+			roomList.emit();
 		}
 
 		// room info
@@ -68,15 +85,7 @@ app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','r
 		});
 		roomInfo.emit({_id:roomId});
 
-		// messages
-		if(messageList.checkListener(_name,roomId)){
-			$scope.messageList = messageList.list(roomId);
-		}else{
-			messageList.addListener(_name,roomId,function(data){
-				$scope.messageList = data;
-			});
-			messageList.emit({_id:roomId});
-		}
+		
 
 		$scope.send = function(){
 			messageNew.emit({_id:roomId,content:$scope.text})

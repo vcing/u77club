@@ -8,6 +8,8 @@ app.directive('createRoom',function(){
 			$(element).find('#create-room .submit').on('click',function(){
 				$(element).find('#create-room').modal('hide');
 			});
+
+			
 		}
 	};
 });

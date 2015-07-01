@@ -117,7 +117,14 @@ function room(){
 					}else{
 						req.io.route('room:leave');
 					}
+					req.socket.emit('room:subscribe',{status:0,msg:'ok'});
 				})); 
+			}));
+		},
+		listbyids:function(req,res){
+			var _ids = req.param('_ids');
+			models.room.find({_id:{$in:_ids}}).exec(errorHandle(req,type,function(rooms){
+				req.socket.emit('room:listbyids',rooms);
 			}));
 		}
 	});

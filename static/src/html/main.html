@@ -22,10 +22,18 @@
 					{{room.description}}
 				</div>
 				<ul class="users">
-					<li class="user">
-						<img class='avatar' src="http://img.u77.com/avatar/u77_avatar.jpg!avatar">
+					<li class="user" ng-repeat='user in room.users'>
+						<img class='avatar' src="http://img.u77.com/avatar/{{user.avatar}}!avatar" alt='{{user.nickname}}'>
 					</li>
 				</ul>
+				<div class="switch-wrap">
+					<input class='switch-input' type='checkbox' id='room-switch-{{room._id}}' ng-checked='room.isSubscribe' ng-click='toggleSubscript(room._id)'>
+					<label class='switch' for='room-switch-{{room._id}}'></label>
+				</div>
+				<div class="last-active">
+					<i class="fa fa-clock-o"></i>
+					<span class='time'>{{room.lastActive}}</span>
+				</div>
 			</li>
 		</ul>
 	</div>

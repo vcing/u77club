@@ -1,9 +1,15 @@
-app.controller('sideBarCtrl',['$scope','$stateParams',function($scope,$stateParams){
-	if($stateParams.roomId){
-		console.log('now in room:'+$stateParams.roomId);
-	}else{
-		console.log('loading side bar');	
-	}
-	$scope.a = 'b';
-	
-}]); 
+app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds',
+	function($scope,$stateParams,userSelf,roomListByIds){
+		var _name = 'sideBarCtrl';
+		var _user = userSelf.self();
+		userSelf.addListener(_name,function(user){
+			_user = user;
+			roomListByIds.emit({_ids:user.rooms});
+		});
+		roomListByIds.emit({_ids:_user.rooms});
+		if(!roomListByIds.checkListener(_name)){
+			roomListByIds.addListener(_name,function(rooms){
+
+			});
+		}
+	}]); 

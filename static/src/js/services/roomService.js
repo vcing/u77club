@@ -38,6 +38,35 @@ app.service('roomInfo',['socket',function(socket){
 	}
 }]);
 
+app.service('roomListByIds',['socket',function(socket){
+	var _cb = {};
+
+	socket.addListener('room:list',function(data){
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
+	});
+
+	return {
+		emit:function(options){
+			socket.emit('room:listbyids',options);	
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		checkListener:function(name){
+			if(_cb[name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
+	}
+}]);
+
 
 app.service('roomList',['socket',function(socket){
 	var _list = [];
@@ -158,6 +187,7 @@ app.service('roomSubscribe',['socket',function(socket){
 			_cb[name] = function(data){
 				delete _cb[name];
 				cb(data);
+				
 			}
 		}
 	}

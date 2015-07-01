@@ -18,7 +18,7 @@ function connection(){
 	 * @return {null}
 	 */
 	app.io.on('connection',function(socket){
-		if(!socket.session.user){
+		if(!socket.session || !socket.session.user){
 			socket.emit('system:nologin');
 			return false;
 		}
