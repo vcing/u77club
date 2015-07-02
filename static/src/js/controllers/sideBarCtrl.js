@@ -12,5 +12,9 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 				$scope.rooms = rooms;
 			});
 		}
-		roomListByIds.emit({_ids:_user.rooms});
+		if(_user){
+			userSelf.emit();
+			// roomListByIds.emit({_ids:_user.rooms});
+		}
+		
 	}]); 

@@ -63,28 +63,46 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state',
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList',
-	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList){
+app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave',
+	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave){
 		var _self = userSelf.self();
 		var _name = 'roomCtrl';
 		var roomId = $stateParams.roomId;
+
+		if(!_self){
+			userSelf.emit();
+		}
 		
 		// online list
-		if(!roomUserList.checkListener(_name,roomId)){
-			roomUserList.addListener(_name,roomId,function(room){
-				$scope.onlineList = room.users;
-				$scope.atList = [];
-				angular.forEach(room.users,function(user){
-					$scope.atList.unshift(user.nickname);
-				});
-				console.log($scope.atList);
-				
-			});
-		}
+		// 这里每次进入房间需要重新绑定监听器 
+		// 因为link 中的dom是新的 
+		// 老的数据没有绑定到新的作用于上面来
+		// if(!roomUserList.checkListener(_name,roomId)){
+		$scope.onlineList = [];
+		roomUserList.addListener(_name,roomId,function(room){
+			$scope.onlineList = room.users;
+		});
+		// }
 		roomUserList.emit({_id:roomId});
+
+		// 同理对于新加入和离开房间事件也是
+		roomJoin.addListener(_name,roomId,function(user){
+			$scope.onlineList.unshift(user);
+		});
+
+		roomLeave.addListener(_name,roomId,function(user){
+			var _i = 0;
+			angular.forEach($scope.onlineList,function(_user){
+				if(_user._id == user._id){
+					$scope.onlineList.splice(_i,1);	
+				}else{
+					_i++;
+				}
+			});
+		});
 		
 		// join room
-		if($.inArray(roomId,_self.rooms) == -1){
+		if(_self && $.inArray(roomId,_self.rooms) == -1){
 			roomSubscribe.emit({_id:roomId});
 			_self.rooms.unshift(roomId);
 			userSelf.setSelf(_self);

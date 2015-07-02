@@ -49,7 +49,11 @@ function room(){
 						room.users.push(req.session.user._id);
 					}else{
 						req.socket.join(room._id);
-						req.socket.emit('room:join',req.session.user);
+						var data = {
+							user:req.session.user,
+							_id:room._id
+						};
+						req.socket.emit('room:join',data);
 						return true;
 					}
 				}else{
@@ -57,7 +61,11 @@ function room(){
 				}
 				room.save();
 				req.socket.join(room._id);
-				app.io.to(room._id).emit('room:join',req.session.user);
+				var data = {
+					user:req.session.user,
+					_id:room._id
+				};
+				app.io.to(room._id).emit('room:join',data);
 			}));
 		},
 		leave:function(req,res){
@@ -84,7 +92,11 @@ function room(){
 				}
 				room.save();
 				req.socket.leave(room._id);
-				app.io.to(room._id).emit('room:leave',req.session.user);
+				var data = {
+					user:req.session.user,
+					_id:room._id
+				};
+				app.io.to(room._id).emit('room:leave',data);
 			}));
 		},
 		delete:function(req,res){

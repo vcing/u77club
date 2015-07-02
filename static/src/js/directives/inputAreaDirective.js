@@ -2,22 +2,19 @@ app.directive('inputArea',function(){
 	return {
 		restrict:'AE',
 		templateUrl:'/room/inputArea.html',
-		scope:{
-			atList:'=',
-			userList:'='
-		}
+		// scope:{
+		// 	atList:'=',
+		// 	onlineList:'='
+		// },
 		replace:true,
 		link:function($scope,element,attrs){
-			$(element).find('textarea').atwho({
-				at: "@",
-				data: $scope.atList,
-			}).atwho({
-				at: ":",
-				data: ["+1", "-1", "smile"]
-			});
-			$(element).find('textarea').on('matched.atwho',function(event,flag,query){
-				console.log($scope.atList);
-			});
+			$scope.$watch('onlineList',function(n,o){				
+				$(element).find('textarea').atwho({
+					at: "@",
+					data: $scope.onlineList,
+					displayTpl:'<li>${nickname}</li>'
+				});		
+			},true);
 		}
 	};
 });

@@ -111,7 +111,7 @@ app.service('roomJoin',['socket',function(socket){
 	var _cb = {};
 	socket.addListener('room:join',function(data){
 		angular.forEach(_cb[data._id],function(cb){
-			cb(data);
+			cb(data.user);
 		});
 	});
 
@@ -140,7 +140,7 @@ app.service('roomLeave',['socket',function(socket){
 	var _cb = {};
 	socket.addListener('room:leave',function(data){
 		angular.forEach(_cb[data._id],function(cb){
-			cb(data);
+			cb(data.user);
 		});
 	});
 
