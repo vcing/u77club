@@ -1,5 +1,5 @@
-app.controller('roomListCtrl',['$scope','$stateParams','roomList','userSelf','socket','roomSubscribe',
-	function($scope,$stateParams,roomList,userSelf,socket,roomSubscribe){
+app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds','userSelf','roomSubscribe',
+	function($scope,$stateParams,roomList,roomListByIds,userSelf,roomSubscribe){
 	var _name = 'roomlistCtrl';
 	if(roomList.checkListener(_name)){
 		$scope.roomList = roomList.list();
@@ -16,15 +16,14 @@ app.controller('roomListCtrl',['$scope','$stateParams','roomList','userSelf','so
 	}
 
 	$scope.toggleSubscript = function(_id){
-		
 		roomSubscribe.on(_name,function(data){
-			socket.emit('user:self');
+			userSelf.emit();
 		});
 		userSelf.on(_name,function(data){
-			socket.emit('room:list',{});	
+			roomList.emit();
+			roomListByIds.emit({_ids:data.rooms});
 		});
-		socket.emit('room:subscribe',{_id:_id});
-		return true;
+		roomSubscribe.emit({_id:_id});
 	}
 
 	$scope.showCreateRoom = function(){
@@ -60,23 +59,37 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state',
 				confirmPassword:''
 			}
 		});
-		
-		// console.log($scope.room);
 
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList',
-	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList){
+app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList',
+	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList){
 		var _self = userSelf.self();
 		var _name = 'roomCtrl';
 		var roomId = $stateParams.roomId;
+		
+		// online list
+		if(!roomUserList.checkListener(_name,roomId)){
+			roomUserList.addListener(_name,roomId,function(room){
+				$scope.onlineList = room.users;
+				$scope.atList = [];
+				angular.forEach(room.users,function(user){
+					$scope.atList.unshift(user.nickname);
+				});
+				console.log($scope.atList);
+				
+			});
+		}
+		roomUserList.emit({_id:roomId});
+		
 		// join room
 		if($.inArray(roomId,_self.rooms) == -1){
 			roomSubscribe.emit({_id:roomId});
 			_self.rooms.unshift(roomId);
 			userSelf.setSelf(_self);
 			roomList.emit();
+			roomListByIds.emit({_ids:_self.rooms});
 		}
 
 		// room info

@@ -126,6 +126,11 @@ function room(){
 			models.room.find({_id:{$in:_ids}}).exec(errorHandle(req,type,function(rooms){
 				req.socket.emit('room:listbyids',rooms);
 			}));
+		},
+		userlist:function(req,res){
+			models.room.findById({_id:req.param('_id')}).populate('users').exec(errorHandle(req,type,function(room){
+				req.socket.emit('room:userlist',room);
+			}));
 		}
 	});
 }

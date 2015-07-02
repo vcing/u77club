@@ -6,10 +6,11 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 			_user = user;
 			roomListByIds.emit({_ids:user.rooms});
 		});
-		roomListByIds.emit({_ids:_user.rooms});
+		
 		if(!roomListByIds.checkListener(_name)){
 			roomListByIds.addListener(_name,function(rooms){
-
+				$scope.rooms = rooms;
 			});
 		}
+		roomListByIds.emit({_ids:_user.rooms});
 	}]); 

@@ -41,7 +41,7 @@ app.service('roomInfo',['socket',function(socket){
 app.service('roomListByIds',['socket',function(socket){
 	var _cb = {};
 
-	socket.addListener('room:list',function(data){
+	socket.addListener('room:listbyids',function(data){
 		angular.forEach(_cb,function(cb){
 			cb(data);
 		});
@@ -248,33 +248,42 @@ app.service('roomDelete',['socket',function(socket){
 }]);
 
 app.service('roomUserList',['socket',function(socket){
-	var _list = [];
+	var _list = {};
 	var _cb = {};
-	socket.addListener('room:list',function(data){
-		_list = data;
-		angular.forEach(_cb,function(cb){
+	socket.addListener('room:userlist',function(data){
+		_list[data._id] = data;
+		angular.forEach(_cb[data._id],function(cb){
 			cb(data);
 		});
 	});
 
 	return {
 		emit:function(options){
-			socket.emit('room:list',options);
+			socket.emit('room:userlist',options);
 		},
-		addListener:function(name,cb){
-			_cb[name] = cb;
+		addListener:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id] = {};
+			_cb[_id][name] = cb;
 		},
-		removeListener:function(name){
-			delete _cb[name];
+		removeListener:function(name,_id){
+			delete _cb[_id][name];
 		},
-		on:function(name,cb){
-			_cb[name] = function(data){
-				delete _cb[name];
+		checkListener:function(name,_id){
+			if(_cb[_id] && _cb[_id][name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
+		on:function(name,_id,cb){
+			if(!_cb[_id])_cb[_id] = {};
+			_cb[_id][name] = function(data){
+				delete _cb[_id][name];
 				cb(data);
 			}
 		},
-		list:function(){
-			return _list;
+		list:function(_id){
+			return _list[_id];
 		}
 	}
 }]);

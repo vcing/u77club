@@ -36,12 +36,22 @@
 </div>
 <div class="tabs-wrap">
 	<ul class="tabs">
-		<li class="tab home" ui-sref-active='active'  ui-sref='main'>
+		<li class="tab home" ui-sref='main'>
             <a>
                 <i class="fa fa-th"></i>
             </a>
         </li>
-        <li class="tab room">
+        <li class='tab room' ng-repeat='room in rooms' ui-sref-active='active'>
+        	<a ui-sref='main.room({roomId:room._id})'>
+	            <span class="title" ng-bind='room.name'></span>
+	            <span class="alert">
+	                <span class="mentions"></span>
+	                <span class="total"></span>
+	            </span>
+	            <span class="close">×</span>
+	        </a>
+        </li>
+        <!-- <li class="tab room">
 	        <a href="#!/room/557a9a33127182274aaa384b">
 	            <span class="title">test</span>
 	            <span class="alert">
@@ -50,6 +60,6 @@
 	            </span>
 	            <span class="close">×</span>
 	        </a>
-	    </li>
+	    </li> -->
 	</ul>
 </div>
