@@ -81,6 +81,7 @@ app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','r
 		$scope.onlineList = [];
 		roomUserList.addListener(_name,roomId,function(room){
 			$scope.onlineList = room.users;
+			$scope.onlineCount = room.users.length;
 		});
 		// }
 		roomUserList.emit({_id:roomId});
@@ -88,6 +89,7 @@ app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','r
 		// 同理对于新加入和离开房间事件也是
 		roomJoin.addListener(_name,roomId,function(user){
 			$scope.onlineList.unshift(user);
+			$scope.onlineCount = $scope.onlineList.length;
 		});
 
 		roomLeave.addListener(_name,roomId,function(user){
@@ -99,6 +101,7 @@ app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','r
 					_i++;
 				}
 			});
+			$scope.onlineCount--;
 		});
 		
 		// join room

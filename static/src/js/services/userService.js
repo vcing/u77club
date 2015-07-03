@@ -8,6 +8,13 @@ app.service('userSelf',['socket',function(socket){
 		});
 	});
 
+	socket.addListener('user:online',function(data){
+		_user = data;
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
+	});
+
 	return {
 		emit:function(options){
 			socket.emit('user:self',options);

@@ -28,6 +28,7 @@ function message(){
 					content:msg.content,
 					_id:msg._id
 				});
+
 			}));
 			models.room.findById(req.param('_id'),errorHandle(req,type,function(room){
 				if(!room){

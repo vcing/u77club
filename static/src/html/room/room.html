@@ -6,4 +6,21 @@
 		</ul>
 		<div input-area></div>
 	</div>
+	<div class="sidebar">
+		<div class="group users">
+			<div class="header">
+				<h3>
+					<i class="fa fa-users"></i>在线(<span class='online-count' ng-bind='onlineCount'></span>)
+				</h3>
+			</div>
+			<ul class="list">
+				<li class="item user" ng-repeat='user in onlineList'>
+			        <img class="avatar" ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar">
+			        <div class="info">
+			            <span class="nickname" ng-bind='user.nickname'></span>
+			        </div>
+			    </li>
+			</ul>
+		</div>
+	</div>
 </div>
