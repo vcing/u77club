@@ -1,6 +1,19 @@
-<div class="room">
+<div class="room" ng-class="{true:'sidebar-open'}[sidebarToggle]">
 	<div class="chat">
-		<div class="header col-xs-12">{{room.name}}</div>	
+		<div class="header">		
+			<div class="meta">
+				<h2 class="heading">
+					<span class="name">{{room.name}}</span>
+
+				</h2>
+				<div class="description">{{room.description}}</div>
+			</div>
+			<div class="actions">
+				<a class="sidebar-toggle" ng-click='sidebarToggle=!sidebarToggle'>
+					<i class="fa fa-chevron-left"></i>
+				</a>
+			</div>
+		</div>
 		<ul class="messages" message-list='messageList'>
 			
 		</ul>

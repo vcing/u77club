@@ -1,52 +1,39 @@
-<div id="create-room" class="modal fade" data-backdrop="true" aria-hidden="false" ng-controller='roomAddCtrl'>
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form role="form" name='createRoom' class="create-room">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">添加房间</h4>
+<div class="modal-content" id='create-room'>
+    <form role="form" name='createRoom' class="create-room">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click='cancel()'>×</button>
+            <h4 class="modal-title">添加房间</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="room-name" required ng-minlength='3' ng-maxlength='12'>名字</label>
+                <input type="text" placeholder="名字" class="room-name form-control" ng-model='room.name'>
+            </div>
+            <div class="form-group">
+                <label>简介</label>
+                <textarea type="text" placeholder="简介" class="room-description form-control"  ng-model='room.description' onpropertychange="this.style.height=this.scrollHeight + 'px'" oninput="this.style.height=this.scrollHeight + 'px'" required></textarea>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="room-private" ng-model='room.private'>
+                    私有房间(勾选此项，房间将不会在公共房间列表中出现)
+                </label>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-9">
+                    <label>密码</label>
+                    <input type="password" placeholder="留空则为公开房间" class="room-password form-control" ng-model='room.password'>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="room-name" required ng-minlength='3' ng-maxlength='12'>名字</label>
-                        <input type="text" placeholder="名字" class="room-name form-control" ng-model='room.name'>
-                    </div>
-
-<!--                     <div class="form-group">
-                        <label>Slug</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">#</span>
-                            <input type="text" placeholder="Slug" class="lcb-room-slug form-control">
-                        </div>
-                    </div> -->
-                    <div class="form-group">
-                        <label>简介</label>
-                        <textarea type="text" placeholder="简介" class="room-description form-control"  ng-model='room.description' onpropertychange="this.style.height=this.scrollHeight + 'px'" oninput="this.style.height=this.scrollHeight + 'px'" required></textarea>
-                    </div>
-                    
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" class="room-private" ng-model='room.private'>
-                                私有房间(勾选此项，房间将不会在公共房间列表中出现)
-                            </label>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-sm-9">
-                                <label>密码</label>
-                                <input type="password" placeholder="留空则为公开房间" class="room-password form-control" ng-model='room.password'>
-                            </div>
-                            <div class="form-group col-sm-9">
-                                <label>确认密码</label>
-                                <input type="password" class="room-confirm-password form-control" ng-model='room.confirmPassword'>
-                            </div>
-                        </div>
-                    
+                <div class="form-group col-sm-9">
+                    <label>确认密码</label>
+                    <input type="password" class="room-confirm-password form-control" ng-model='room.confirmPassword'>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary submit" ng-click='submit()' ng-disabled='!createRoom.$valid'>创建</button>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='cancel()'>取消</button>
+            <button type="submit" class="btn btn-primary submit" ng-click='submit()' ng-disabled='!createRoom.$valid'>创建</button>
+        </div>
+    </form>
 </div>

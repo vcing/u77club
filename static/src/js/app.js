@@ -1,4 +1,4 @@
-var app = angular.module('u77club',['btford.socket-io','ui.router']);
+var app = angular.module('u77club',['btford.socket-io','ui.router','ui.bootstrap']);
 
 app.service('socket',['socketFactory',function(socketFactory){
 	var socket = socketFactory();

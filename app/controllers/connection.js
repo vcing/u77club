@@ -35,10 +35,8 @@ function connection(){
 					socket.emit('system:room','wrong room id');
 					return false;
 				}
-				console.log('connect');
 				if(room.users.length != 0){
 					var users = room.users.toString().split(',');
-					console.log(users);
 					if(_.indexOf(users,socket.session.user._id.toString()) == -1){
 						room.users.push(socket.session.user._id);
 					}else{
@@ -52,7 +50,6 @@ function connection(){
 					}
 				}else{
 					room.users = [socket.session.user._id];
-					console.log(room.users);
 				}
 				room.save();
 				socket.join(room._id);
@@ -109,7 +106,6 @@ function connection(){
 						socket.emit('system:room','wrong room id');
 						return false;
 					}
-					console.log('reconnect');
 					if(room.users){
 						var users = room.users.toString().split(',');
 						if(_.indexOf(users,socket.session.user._id.toString()) == -1){

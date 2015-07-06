@@ -1,5 +1,5 @@
-app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds','userSelf','roomSubscribe',
-	function($scope,$stateParams,roomList,roomListByIds,userSelf,roomSubscribe){
+app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds','userSelf','roomSubscribe','$modal',
+	function($scope,$stateParams,roomList,roomListByIds,userSelf,roomSubscribe,$modal){
 	var _name = 'roomlistCtrl';
 	if(roomList.checkListener(_name)){
 		$scope.roomList = roomList.list();
@@ -27,12 +27,17 @@ app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds
 	}
 
 	$scope.showCreateRoom = function(){
-		$('#create-room').modal('show');
+		// $('#create-room').modal('show');
+		var createRoomModal = $modal.open({
+			animation:true,
+			templateUrl:'/room/create.html',
+			controller:'roomAddCtrl'
+		});
 	}
 }]);
 
-app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state',
-	function($scope,roomCreate,roomList,$state){
+app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalInstance',
+	function($scope,roomCreate,roomList,$state,$modalInstance){
 	var _name = 'roomAddCtrl';
 	$scope.room = {
 		name:'',
@@ -40,6 +45,10 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state',
 		private:false,
 		password:'',
 		confirmPassword:''
+	}
+	
+	$scope.cancel = function(){
+		$modalInstance.dismiss('cancel');
 	}
 
 	$scope.submit = function(){
@@ -49,6 +58,7 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state',
 		}
 		roomCreate.emit($scope.room);
 		roomCreate.addListener(_name,function(data){
+			$modalInstance.close('complate');
 			$state.go('main.room',{roomId:data._id});	
 			roomList.emit();
 			$scope.room = {
