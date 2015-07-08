@@ -3,7 +3,8 @@ app.directive('messageList',function(){
 		restrict:'A',
 		templateUrl:'/message/list.html',
 		scope:{
-			messageList:'='
+			messageList:'=',
+			messageCount:'='
 		},
 		controller:'messageListCtrl',
 		link:function($scope,element,attrs){

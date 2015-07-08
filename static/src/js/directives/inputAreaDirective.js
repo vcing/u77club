@@ -8,11 +8,13 @@ app.directive('inputArea',function(){
 		// },
 		replace:true,
 		link:function($scope,element,attrs){
+			$('.atwho-container').remove();
 			$scope.$watch('onlineList',function(n,o){				
 				$(element).find('textarea').atwho({
 					at: "@",
 					data: $scope.onlineList,
-					displayTpl:'<li>${nickname}</li>'
+					displayTpl:'<li>${nickname}</li>',
+					insertTpl:' @${nickname} '
 				});		
 			},true);
 		}

@@ -1,18 +1,20 @@
-app.service('userSelf',['socket',function(socket){
+app.service('userSelf',['socket','$q','roomListByIds',function(socket,$q,roomListByIds){
 	var _user;
 	var _cb = {};
-	socket.addListener('user:self',function(data){
+
+	function fresh(data){
 		_user = data;
+		roomListByIds.emit({_ids:data.rooms});
 		angular.forEach(_cb,function(cb){
 			cb(data);
 		});
+	}
+	socket.addListener('user:self',function(data){
+		fresh(data);
 	});
 
 	socket.addListener('user:online',function(data){
-		_user = data;
-		angular.forEach(_cb,function(cb){
-			cb(data);
-		});
+		fresh(data);
 	});
 
 	return {
@@ -36,6 +38,15 @@ app.service('userSelf',['socket',function(socket){
 		},
 		setSelf:function(user){
 			_user = user;
+			fresh(user);
+		},
+		promise:function(options){
+			var deferred = $q.defer();
+			socket.emit('user:selft',options);
+			socket.on('user:selft',function(data){
+				deferred.resolve(data);
+			});
+			return deferred.promise;
 		}
 	}
 }]);

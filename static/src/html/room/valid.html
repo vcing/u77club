@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click='cancel()'>×</button>
+    <h4 class="modal-title">需要密码</h4>
+</div>
+<div class="modal-body">
+    <p>
+        房间 <strong><span class="name" ng-bind="name"></span></strong> 需要密码
+    </p>
+    <div class="form-group">
+        <label for="password">密码</label>
+        <input type="password" class="form-control" required ng-model="password">
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='cancel()'>取消</button>
+    <button type="submit" class="btn btn-primary" ng-bind='action' ng-click='submit()'></button>
+</div>

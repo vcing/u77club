@@ -8,7 +8,8 @@ settings    = require('./settings.json'),
 app         = express(),
 models      = require('./app/models'),
 middlewares = require('./app/middlewares'),
-controllers = require('./app/controllers');
+controllers = require('./app/controllers'),
+common      = require('./app/common');
 
 app.http().io();
 
@@ -16,6 +17,7 @@ var options = {server:{},replset:{}};
 options.server.socketOptions  = { keepAlive: 1 };
 options.replset.socketOptions = { keepAlive: 1 };
 mongoose.connect(settings.mongo.url,options);
+
 
 // session
 app.io.session({
@@ -39,7 +41,7 @@ app.set('view engine', 'ejs');
 // publich
 app.use(express.static(__dirname + '/static/dest', { maxAge: '364d' }));
 
-
+common.setApp(app);
 
 // 清空房间在线列表
 models.room.find({}).exec(function(err,docs){
@@ -57,7 +59,7 @@ _.map(controllers,function(controller){
 		middlewares:middlewares,
 		models:models,
 		controllers: controllers,
-		common: require('./app/common')
+		common: common
 	});
 });
 

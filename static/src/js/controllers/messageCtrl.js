@@ -5,10 +5,8 @@ app.controller('messageListCtrl',['$scope','messageList','$stateParams',
 		$scope.messageCount = 0;
 		// messages
 		if(messageList.checkListener(_name,roomId)){
-			// $scope.$apply(function(){
 			$scope.messageCount = messageList.list(roomId).length; 
 			$scope.messageList = messageList.list(roomId);
-			// });
 		}else{
 			messageList.addListener(_name,roomId,function(data){
 				// $scope.$apply(function(){
@@ -16,6 +14,6 @@ app.controller('messageListCtrl',['$scope','messageList','$stateParams',
 				$scope.messageList = data;
 				// });
 			});
-			messageList.emit({_id:roomId});
+			
 		}
 	}]);

@@ -15,8 +15,7 @@ app.config(['$stateProvider','$urlRouterProvider',
 		
 
 		// 路由
-		$urlRouterProvider.when("", "/");
-		$urlRouterProvider.otherwise('/');
+		
 		$stateProvider
 			.state('main',{
 				url:'/',
@@ -36,16 +35,17 @@ app.config(['$stateProvider','$urlRouterProvider',
 					}
 				}
 			})
-			// .state('main.createroom',{
-			// 	url:'createroom',
-			// 	views:{
-			// 		'dialog':{
-			// 			templateUrl:'room/create.html',
-			// 			controller:'roomAddCtrl'
-			// 		}
-			// 	}
-			// })
-
+			.state('valid',{
+				url:'/valid/:id/:name',
+				views:{
+					'main':{
+						template:'room/validDirect.thml',
+						controller:'roomValidDirectCtrl',
+					}
+				}
+			})
+		$urlRouterProvider.when("", "/");
+		$urlRouterProvider.otherwise('/');
 	}]);
 
 

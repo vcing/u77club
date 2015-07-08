@@ -15,20 +15,27 @@
 		</div>
 		<ul class='list'>
 			<li class='item' ng-repeat='room in roomList'>
-				<div class='top' ui-sref='main.room({roomId:room._id})'>
-					{{room.name}}
+				<div class='top'>
+					<span class="locked fa fa-lock" ng-show="room.type == 2"></span>
+					<a class="name" ui-sref='main.room({roomId:room._id})' ng-if="room.type == 1">{{room.name}}</a>
+					<a class="name" ng-if="room.type == 2" ng-click='valid(room._id,room.name,room.isSubscribe)'>{{room.name}}</a>
 				</div>
 				<div class="description">
 					{{room.description}}
 				</div>
 				<ul class="users">
 					<li class="user" ng-repeat='user in room.users'>
-						<img class='avatar' src="http://img.u77.com/avatar/{{user.avatar}}!avatar" alt='{{user.nickname}}'>
+						<img class='avatar' ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar" alt='{{user.nickname}}'>
 					</li>
 				</ul>
-				<div class="switch-wrap">
-					<input class='switch-input' type='checkbox' id='room-switch-{{room._id}}' ng-checked='room.isSubscribe' ng-click='toggleSubscript(room._id)'>
-					<label class='switch' for='room-switch-{{room._id}}'></label>
+				<div class="switch-wrap"  ng-if="room.type == 1">
+					<input class='switch-input' type='checkbox' id='room-switch-{{room._id}}' ng-checked='room.isSubscribe'>
+					<label class='switch' for='room-switch-{{room._id}}' ng-click='toggleSubscript(room._id)'></label>
+					
+				</div>
+				<div class="switch-wrap" ng-if="room.type == 2">
+					<input class='switch-input' type='checkbox' id='room-switch-{{room._id}}' ng-checked='room.isSubscribe' ng-disabled="1">
+					<label class='switch' for='room-switch-{{room._id}}' ng-click='validSubscript(room._id,room.name,room.isSubscribe)'></label>
 				</div>
 				<div class="last-active">
 					<i class="fa fa-clock-o"></i>

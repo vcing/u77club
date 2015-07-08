@@ -1,5 +1,5 @@
-app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds','userSelf','roomSubscribe','$modal',
-	function($scope,$stateParams,roomList,roomListByIds,userSelf,roomSubscribe,$modal){
+app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','userSelf','roomSubscribe','$modal',
+	function($scope,$state,roomList,roomListByIds,userSelf,roomSubscribe,$modal){
 	var _name = 'roomlistCtrl';
 	if(roomList.checkListener(_name)){
 		$scope.roomList = roomList.list();
@@ -15,15 +15,17 @@ app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds
 		roomList.emit();
 	}
 
-	$scope.toggleSubscript = function(_id){
-		roomSubscribe.on(_name,function(data){
-			userSelf.emit();
-		});
-		userSelf.on(_name,function(data){
-			roomList.emit();
-			roomListByIds.emit({_ids:data.rooms});
-		});
-		roomSubscribe.emit({_id:_id});
+	$scope.toggleSubscript = function(_id,hasPassword){
+		var options = {_id:_id};
+		if(hasPassword){
+			options.hasPassword = hasPassword;
+		}
+		roomSubscribe.emit(options);
+		// roomSubscribe.promise(options)
+		// 	.then(function(data){
+		// 		userSelf.emit();
+		// 		roomList.emit();
+		// 	});
 	}
 
 	$scope.showCreateRoom = function(){
@@ -34,7 +36,90 @@ app.controller('roomListCtrl',['$scope','$stateParams','roomList','roomListByIds
 			controller:'roomAddCtrl'
 		});
 	}
+
+	$scope.validSubscript = function(_id,name,isSubscribe){
+		if(isSubscribe){
+			$scope.toggleSubscript(_id,true);
+			return true;
+		}
+
+		var validSubscriptModal = $modal.open({
+			animation:true,
+			templateUrl:'/room/valid.html',
+			controller:'roomValidCtrl',
+			resolve:{
+				name:function(){
+					return name;
+				},
+				_id:function(){
+					return _id;
+				},
+				action:function(){
+					return '订阅';
+				}
+			}
+		});
+
+		validSubscriptModal.result.then(function(data){
+				angular.forEach($scope.roomList,function(room){
+					if(room._id == data._id){
+						$scope.toggleSubscript(data._id,true);
+					}
+				});
+			})
+	}
+
+	$scope.valid = function(_id,name,isSubscribe){
+		if(isSubscribe){
+			$state.go("main.room",{roomId:_id});
+			return true;
+		}
+		var validModal = $modal.open({
+			animation:true,
+			templateUrl:'/room/valid.html',
+			controller:'roomValidCtrl',
+			resolve:{
+				name:function(){
+					return name;
+				},
+				_id:function(){
+					return _id;
+				},
+				action:function(){
+					return '进入';
+				}
+			}
+		});
+
+		validModal.result.then(function(data){
+			$state.go("main.room",{roomId:data._id});
+		})
+	}
+
+	
 }]);
+
+app.controller('roomValidCtrl',['$scope','roomValid','$modalInstance','name','_id','action',
+	function($scope,roomValid,$modalInstance,name,_id,action){
+		$scope.name = name;
+		$scope.action = action;
+		$scope.password = '';
+
+		$scope.submit = function(){
+			roomValid({_id:_id,password:$scope.password}).then(function(data){
+				if(data.status == 'ok'){
+					$modalInstance.close(data);
+				}else{
+					alert('密码错误');
+				}
+			});
+			
+		}
+
+		$scope.cancel = function(){
+			$modalInstance.dismiss('cancel');
+		}
+	}]);
 
 app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalInstance',
 	function($scope,roomCreate,roomList,$state,$modalInstance){
@@ -73,8 +158,8 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave',
-	function($scope,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave){
+app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid',
+	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid){
 		var _self = userSelf.self();
 		var _name = 'roomCtrl';
 		var roomId = $stateParams.roomId;
@@ -82,19 +167,62 @@ app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','r
 		if(!_self){
 			userSelf.emit();
 		}
+
+		// 从这里开始
+		roomInfo.promise({_id:roomId})
+			.then(function(room){	
+				if(room.type == 2 || room.type == 4){
+					permissionValid({roomId:room._id}).then(function(data){
+						if(data.status == 0){
+							init(room)
+						}else{
+							$state.go("valid",{id:roomId,name:room.name});
+						}
+					});
+				}else{
+					init(room);
+				}
+			});
+		
+
+		function init(room){
+			if($.inArray(roomId,_self.rooms) == -1){
+				var options = {_id:roomId};
+				if(room.type == 2 || room.type == 4){
+					options.hasPassword = true;
+				}
+				roomSubscribe.promise(options)
+					.then(function(data){
+						userSelf.emit();
+						roomList.emit();
+					});
+			}
+			$scope.room = room;
+			messageList.emit({_id:roomId});
+			roomUserList.emit({_id:roomId});
+		}
+
+
+		userSelf.addListener(_name,function(user){
+			_self = user;
+		});
 		
 		// online list
 		// 这里每次进入房间需要重新绑定监听器 
 		// 因为link 中的dom是新的 
-		// 老的数据没有绑定到新的作用于上面来
-		// if(!roomUserList.checkListener(_name,roomId)){
+		// 老的数据没有绑定到新的作用域上面来
 		$scope.onlineList = [];
 		roomUserList.addListener(_name,roomId,function(room){
 			$scope.onlineList = room.users;
 			$scope.onlineCount = room.users.length;
 		});
+
+		messageList.addListener(_name,roomId,function(data){
+			$scope.messageCount = data.length;
+			$scope.messageList = data;
+		});
 		// }
-		roomUserList.emit({_id:roomId});
+		
 
 		// 同理对于新加入和离开房间事件也是
 		roomJoin.addListener(_name,roomId,function(user){
@@ -113,26 +241,37 @@ app.controller('roomCtrl',['$scope','$stateParams','messageNew','messageList','r
 			});
 			$scope.onlineCount--;
 		});
-		
-		// join room
-		if(_self && $.inArray(roomId,_self.rooms) == -1){
-			roomSubscribe.emit({_id:roomId});
-			_self.rooms.unshift(roomId);
-			userSelf.setSelf(_self);
-			roomList.emit();
-			roomListByIds.emit({_ids:_self.rooms});
-		}
 
-		// room info
-		roomInfo.addListener(_name,roomId,function(room){
-			$scope.room = room;
-		});
-		roomInfo.emit({_id:roomId});
-
-		
 
 		$scope.send = function(){
 			messageNew.emit({_id:roomId,content:$scope.text})
 			$scope.text = '';
 		}
-	}]); 
+	}]);
+
+app.controller('roomValidDirectCtrl',['$scope','$state','$stateParams','$modal',
+	function($scope,$state,$stateParams,$modal){
+		var validModal = $modal.open({
+			animation:true,
+			templateUrl:'/room/valid.html',
+			controller:'roomValidCtrl',
+			resolve:{
+				name:function(){
+					return $stateParams.name;
+				},
+				_id:function(){
+					return $stateParams.id;
+				},
+				action:function(){
+					return '进入';
+				}
+			}
+		});
+
+		validModal.result.then(function(data){
+			$state.go("main.room",{roomId:data._id});
+		},function(result){
+			console.log(result);
+			$state.go("main");
+		})
+	}]);

@@ -36,9 +36,13 @@ var RoomSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    private: {
-        type: Boolean,
-        default: false
+    type: {
+        type: Number,
+        default: 1  
+        // 1:普通公开房间
+        // 2:普通加密房间
+        // 3:私有房间
+        // 4:私有加密房间
     },
     password: {
         type: String,
@@ -67,7 +71,10 @@ RoomSchema.statics.createRoom = function(options,errorHandle){
  * @return {null}
  */
 RoomSchema.statics.roomList = function(errorHandle){
-    this.find().select('_id name users description private lastActive').populate('users').exec(errorHandle);
+    this
+    .find({type:{$in:[1,2]}})
+    .select('_id name users description lastActive type')
+    .populate('users','_id nickname avatar').exec(errorHandle);
 
 }
 

@@ -1,4 +1,4 @@
-app.service('roomInfo',['socket',function(socket){
+app.service('roomInfo',['socket','$q',function(socket,$q){
 	var _list = {};
 	var _cb = {};
 	socket.addListener('room:info',function(data){
@@ -34,6 +34,14 @@ app.service('roomInfo',['socket',function(socket){
 		},
 		info:function(_id){
 			return _list[_id];
+		},
+		promise:function(options){
+			var deferred = $q.defer();
+			socket.emit('room:info',options);
+			socket.on('room:info',function(data){
+				deferred.resolve(data);
+			});
+			return deferred.promise;
 		}
 	}
 }]);
@@ -126,6 +134,13 @@ app.service('roomJoin',['socket',function(socket){
 		removeListener:function(name,_id){
 			delete _cb[_id][name];
 		},
+		checkListener:function(name,_id){
+			if(_cb[_id] && _cb[_id][name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
 		on:function(name,_id,cb){
 			if(!_cb[_id])_cb[_id] = {};
 			_cb[_id][name] = function(data){
@@ -155,6 +170,13 @@ app.service('roomLeave',['socket',function(socket){
 		removeListener:function(name,_id){
 			delete _cb[_id][name];
 		},
+		checkListener:function(name,_id){
+			if(_cb[_id] && _cb[_id][name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
 		on:function(name,_id,cb){
 			if(!_cb[_id])_cb[_id] = {};
 			_cb[_id][name] = function(data){
@@ -165,9 +187,11 @@ app.service('roomLeave',['socket',function(socket){
 	}
 }]);
 
-app.service('roomSubscribe',['socket',function(socket){
+app.service('roomSubscribe',['socket','userSelf','roomList','$q',function(socket,userSelf,roomList,$q){
 	var _cb = {};
 	socket.addListener('room:subscribe',function(data){
+		userSelf.emit();
+		roomList.emit();
 		angular.forEach(_cb,function(cb){
 			cb(data);
 		});
@@ -183,12 +207,27 @@ app.service('roomSubscribe',['socket',function(socket){
 		removeListener:function(name){
 			delete _cb[name];
 		},
+		checkListener:function(name){
+			if(_cb[name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
 		on:function(name,cb){
 			_cb[name] = function(data){
 				delete _cb[name];
 				cb(data);
 				
 			}
+		},
+		promise:function(options){
+			var deferred = $q.defer();
+			socket.emit('room:subscribe',options);
+			socket.on('room:subscribe',function(data){
+				deferred.resolve(data);
+			});
+			return deferred.promise;
 		}
 	}
 }]);
@@ -246,6 +285,31 @@ app.service('roomDelete',['socket',function(socket){
 		}
 	}
 }]);
+
+app.service('roomValid',['socket','$q',
+	function(socket,$q){
+		return function(options){
+			var deferred = $q.defer();
+			socket.on('room:valid',function(data){
+				deferred.resolve(data);
+			});
+			socket.emit('room:valid',options);
+			return deferred.promise;
+		}
+	}]);
+
+app.service('permissionValid',['socket','$q',
+	function(socket,$q){
+		return function(options){
+			var deferred = $q.defer();
+			socket.on('room:permission',function(data){
+				deferred.resolve(data);
+			});
+			socket.emit('room:permission',options);
+			return deferred.promise;
+		}
+	}]);
+	
 
 app.service('roomUserList',['socket',function(socket){
 	var _list = {};

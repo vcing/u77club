@@ -7,6 +7,7 @@ function user(){
 	var common      = this.common;
 	var onlineList  = common.onlineList;
 	var type        = 'user';
+	var errorHandle = common.errorHandle;
 
 	// 首页
 	app.get('/', middlewares.requireLogin, function(req,res){
@@ -46,7 +47,12 @@ function user(){
 
 	app.io.route(type,{
 		self:function(req,res){
-			req.socket.emit(type+':self',req.session.user);
+			models.user.findById(req.session.user._id).exec(errorHandle(req,type,function(user){
+				req.session.user = user;
+				req.session.save();
+				req.socket.emit(type+':self',user);
+			}))
+			
 		}
 	})
 

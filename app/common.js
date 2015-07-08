@@ -1,5 +1,6 @@
 var onlineList = {};
 var _          = require('lodash');
+var app;
 
 module.exports = {
 	onlineLists : onlineList,
@@ -75,5 +76,26 @@ module.exports = {
 		}else{
 			console.log(' wtf ');
 		}
+	},
+	emit:function(req,route,options){
+		var _app = app;
+		_.forEach(onlineList[req.session.user._id],function(socketId){
+			_app.io.sockets.connected[socketId].emit(route,options);
+		});
+	},
+	join:function(req,roomId){
+		var _app = app;
+		_.forEach(onlineList[req.session.user._id],function(socketId){
+			_app.io.sockets.connected[socketId].join(roomId);
+		});
+	},
+	leave:function(req,roomId){
+		var _app = app;
+		_.forEach(onlineList[req.session.user._id],function(socketId){
+			_app.io.sockets.connected[socketId].leave(roomId);
+		});
+	},
+	setApp:function(_app){
+		app = _app;
 	}
 }
