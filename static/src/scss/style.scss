@@ -1068,6 +1068,30 @@
 		}
 	}
 
+	.message.fragment{
+		min-height: 0;
+		margin-top: -3.5px;
+		border-top: none;
+
+		.avatar{
+			display: none;
+		}
+
+		.content{
+			.name{
+				display: none;
+			}
+
+			.time{
+				display: none;
+			}
+		}
+	}
+
+	.message.own{
+		background:#fcffd8;
+	}
+
 	.message:first-child{
 		border-top:none;
 	}

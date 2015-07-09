@@ -52,7 +52,7 @@ var UserSchema = new mongoose.Schema({
 	}],
 	messages:[{
 		type:ObjectId,
-		ref:"Message"
+		ref:"UserMessage"
 	}]
 });
 

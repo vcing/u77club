@@ -1,4 +1,4 @@
-<li class="message" ng-repeat='message in messageList'>
+<li class="message {{message.class}}" ng-repeat='message in messageList'>
 	<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar">
 	<div class="content">
 		<span class='name'>{{message.sender.nickname}}</span>

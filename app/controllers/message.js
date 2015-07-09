@@ -47,6 +47,9 @@ function message(){
 			models.message.findByRoom(req.param('_id'),errorHandle(req,type,function(messages){
 				req.socket.emit(type+':list',{_id:req.param('_id'),messages:messages});
 			}));
+			// models.userRoomActive.getUserRoomLastActive(req,function(active){
+			// 	console.log(active);
+			// });
 		},
 		private:function(req,res){
 			clients = onlineList()[req.param('_id')];

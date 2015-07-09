@@ -25,7 +25,7 @@ roomPermissionSchema.statics.valid = function(roomId,userId,cb){
 	var _valid = false;
 	this.findOne({roomId:roomId}).exec(function(err,data){
 		_.forEach(data.users,function(_id){
-			if(_id == userId){
+			if(_id == userId.toString()){
 				_valid = true;
 			}
 		})
@@ -35,7 +35,7 @@ roomPermissionSchema.statics.valid = function(roomId,userId,cb){
 
 roomPermissionSchema.statics.add = function(roomId,userId){
 	this.findOne({roomId:roomId}).exec(function(err,data){
-		if(_.indexOf(data.users,userId) == -1){
+		if(_.indexOf(data.users,userId.toString()) == -1){
 			data.users.unshift(userId);	
 		}
 		data.save()
@@ -44,7 +44,7 @@ roomPermissionSchema.statics.add = function(roomId,userId){
 
 roomPermissionSchema.statics.kick = function(roomId,userId){
 	this.findOne({roomId:roomId}).exec(function(err,data){
-		while(_.indexOf(data.users,userId) != -1){
+		while(_.indexOf(data.users,userId.toString()) != -1){
 			data.users.splice(_.indexOf(data.users,userId),1);
 		}
 		data.save();

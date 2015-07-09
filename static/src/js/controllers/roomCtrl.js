@@ -21,11 +21,6 @@ app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','use
 			options.hasPassword = hasPassword;
 		}
 		roomSubscribe.emit(options);
-		// roomSubscribe.promise(options)
-		// 	.then(function(data){
-		// 		userSelf.emit();
-		// 		roomList.emit();
-		// 	});
 	}
 
 	$scope.showCreateRoom = function(){
@@ -107,7 +102,7 @@ app.controller('roomValidCtrl',['$scope','roomValid','$modalInstance','name','_i
 
 		$scope.submit = function(){
 			roomValid({_id:_id,password:$scope.password}).then(function(data){
-				if(data.status == 'ok'){
+				if(data.status == 0){
 					$modalInstance.close(data);
 				}else{
 					alert('密码错误');
@@ -169,21 +164,24 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		}
 
 		// 从这里开始
-		roomInfo.promise({_id:roomId})
-			.then(function(room){	
-				if(room.type == 2 || room.type == 4){
-					permissionValid({roomId:room._id}).then(function(data){
-						if(data.status == 0){
-							init(room)
-						}else{
-							$state.go("valid",{id:roomId,name:room.name});
-						}
-					});
-				}else{
-					init(room);
-				}
-			});
-		
+		if(!roomInfo.info(roomId)){
+			roomInfo.promise({_id:roomId})
+				.then(function(room){	
+					if(room.type == 2 || room.type == 4){
+						permissionValid({roomId:room._id}).then(function(data){
+							if(data.status == 0){
+								init(room)
+							}else{
+								$state.go("valid",{id:roomId,name:room.name});
+							}
+						});
+					}else{
+						init(room);
+					}
+				});
+		}else{
+			init(roomInfo.info(roomId));
+		}
 
 		function init(room){
 			if($.inArray(roomId,_self.rooms) == -1){
@@ -198,8 +196,8 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 					});
 			}
 			$scope.room = room;
-			messageList.emit({_id:roomId});
-			roomUserList.emit({_id:roomId});
+			if(!messageList.list(roomId))messageList.emit({_id:roomId});
+			if(!roomUserList.list(roomId))roomUserList.emit({_id:roomId});
 		}
 
 
@@ -271,7 +269,6 @@ app.controller('roomValidDirectCtrl',['$scope','$state','$stateParams','$modal',
 		validModal.result.then(function(data){
 			$state.go("main.room",{roomId:data._id});
 		},function(result){
-			console.log(result);
 			$state.go("main");
 		})
 	}]);

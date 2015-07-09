@@ -143,7 +143,6 @@ function room(){
 					user.rooms = [req.param('_id')];
 				}
 				user.save(errorHandle(req,type,function(){
-
 					req.session.user = user;
 					req.session.save();
 					if(is_subscribe){
@@ -156,16 +155,18 @@ function room(){
 									req.socket.emit('system:error','you do not have permission to enter this room');
 								}
 							});
+							// 创建用户房间活动
 						}else{
 							req.io.route('room:join');
 						}
-						
+						models.userRoomActive.addRoomActive(req);
 					}else{
 						if(req.param('hasPassword')){
 							// 如果是加密房间则将该用户从 加密房间的授权列表中删除
 							models.roomPermission.kick(req.param('_id'),req.session.user._id);
 						}
 						req.io.route('room:leave');	
+						models.userRoomActive.removeRoomActive(req);
 					}
 					// req.socket.emit('room:subscribe',{status:0,msg:'ok'});
 					emit(req,'room:subscribe',{status:0,msg:'ok'});
@@ -184,14 +185,28 @@ function room(){
 			}));
 		},
 		valid:function(req,res){
-			models.roomPermission.add(req.param('_id'),req.session.user._id);
-			req.socket.emit('room:valid',{_id:req.param('_id'),status:'ok'});
+			models.room.findById(req.param('_id')).exec(errorHandle(req,type,function(room){
+				if(room && req.param('password') && req.param('password') == room.password){
+					models.roomPermission.add(req.param('_id'),req.session.user._id);
+					req.socket.emit('room:valid',{_id:req.param('_id'),status:0,msg:'ok'});
+				}else{
+					req.socket.emit('room:valid',{_id:req.param('_id'),status:101,msg:'wrong password'});
+				}
+			}));
+			
 		},
 		permission:function(req,res){
 			models.roomPermission.valid(req.param('roomId'),req.session.user._id,function(result){
 				if(result){
 					req.socket.emit('room:permission',{_id:req.param('roomId'),status:0,msg:'ok'});
 				}else{
+					// models.room.findById(req.param('roomId')).exec(errorHandle(req,type,function(room){
+					// 	if(room && req.param('password') && req.param('password') == room.password){
+					// 		req.socket.emit('room:permission',{_id:req.param('roomId'),status:0,msg:'ok'});
+					// 	}else{
+					// 		req.socket.emit('room:permission',{_id:req.param('roomId'),status:101,msg:'no permission'});
+					// 	}
+					// }));
 					req.socket.emit('room:permission',{_id:req.param('roomId'),status:101,msg:'no permission'});
 				}
 			});
