@@ -44,22 +44,12 @@
         <li class='tab room' ng-repeat='room in rooms' ui-sref-active='active'>
         	<a ui-sref='main.room({roomId:room._id})'>
 	            <span class="title" ng-bind='room.name'></span>
-	            <span class="alert">
+	            <span class="alert" ng-show="current != room._id">
 	                <span class="mentions"></span>
-	                <span class="total"></span>
+	                <span class="total" ng-bind="room.messageRemind" ng-show="room.messageRemind != 0"></span>
 	            </span>
 	            <span class="close">×</span>
 	        </a>
         </li>
-        <!-- <li class="tab room">
-	        <a href="#!/room/557a9a33127182274aaa384b">
-	            <span class="title">test</span>
-	            <span class="alert">
-	                <span class="mentions"></span>
-	                <span class="total"></span>
-	            </span>
-	            <span class="close">×</span>
-	        </a>
-	    </li> -->
 	</ul>
 </div>

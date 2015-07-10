@@ -1,6 +1,8 @@
-app.service('roomInfo',['socket','$q',function(socket,$q){
+app.service('roomInfo',['socket','$q','roomUpdateActive',function(socket,$q,roomUpdateActive){
 	var _list = {};
 	var _cb = {};
+	var _current = '';
+	var _sideBarAction;
 	socket.addListener('room:info',function(data){
 		_list[data._id] = data;
 		angular.forEach(_cb[data._id],function(cb){
@@ -33,6 +35,11 @@ app.service('roomInfo',['socket','$q',function(socket,$q){
 			}
 		},
 		info:function(_id){
+			// 因为每次切换房间
+			// 必定会执行这个函数
+			// 所以在这里处理 侧栏的消息提醒数目
+			if(_sideBarAction)_sideBarAction(_id);
+			if(_id != 'list')roomUpdateActive.emit({_id:_id});
 			return _list[_id];
 		},
 		promise:function(options){
@@ -42,6 +49,9 @@ app.service('roomInfo',['socket','$q',function(socket,$q){
 				deferred.resolve(data);
 			});
 			return deferred.promise;
+		},
+		setSideBarAction:function(fn){
+			_sideBarAction = fn;
 		}
 	}
 }]);
@@ -57,7 +67,7 @@ app.service('roomListByIds',['socket',function(socket){
 
 	return {
 		emit:function(options){
-			socket.emit('room:listbyids',options);	
+			socket.emit('room:listbyids',options);
 		},
 		addListener:function(name,cb){
 			_cb[name] = cb;
@@ -351,3 +361,12 @@ app.service('roomUserList',['socket',function(socket){
 		}
 	}
 }]);
+
+app.service('roomUpdateActive',['socket',
+	function(socket){
+		return {
+			emit:function(options){
+				socket.emit('room:updateactive',options);
+			}
+		}
+	}]);

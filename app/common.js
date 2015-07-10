@@ -16,9 +16,11 @@ module.exports = {
 		return function(err,doc){
 			if(err){
 				if(req){
-					req.socket.emit('system:'+type,err);	
+					req.socket.emit('system:'+type,err);
 				}
+				
 				console.log(err);
+				console.log(type);
 			}else{
 				if(cb)cb(doc);
 			}

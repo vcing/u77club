@@ -1,14 +1,37 @@
 app.service('messageNew',['socket','messageList',function(socket,messageList){
+	var _cb = {};
+
+	
+
 	socket.addListener('message:new',function(data){
 		var _list = messageList.list(data.room);
-		_list.push(data);
-		messageList.setList(data.room,_list);
+		if(_list){
+			_list.push(data);
+			messageList.setList(data.room,_list);
+		}
+		
+		angular.forEach(_cb,function(cb){
+			cb(data);
+		});
 	});
 
 	return {
 		emit:function(options){
 			socket.emit('message:new',options);
-		}
+		},
+		addListener:function(name,cb){
+			_cb[name] = cb;
+		},
+		removeListener:function(name){
+			delete _cb[name];
+		},
+		checkListener:function(name){
+			if(_cb[name]){
+				return true;
+			}else{
+				return false;
+			}
+		},
 	}
 }]);
 
@@ -62,3 +85,17 @@ app.service('messageList',['socket',function(socket){
 		}
 	}
 }]);
+
+app.service('messageRemind',['$scope','socket','$q',
+	function($scope,socket,$q){
+		return {
+			promise:function(options){
+				var deffered = $q.defer();
+				socket.emit('message:remind',options);
+				socket.on('message:remind',function(data){
+					deffered.resolve(data);
+				})
+				return deffered.pormise;
+			}
+		}
+	}]);

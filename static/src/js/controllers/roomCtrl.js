@@ -1,5 +1,5 @@
-app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','userSelf','roomSubscribe','$modal',
-	function($scope,$state,roomList,roomListByIds,userSelf,roomSubscribe,$modal){
+app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','userSelf','roomSubscribe','$modal','roomInfo',
+	function($scope,$state,roomList,roomListByIds,userSelf,roomSubscribe,$modal,roomInfo){
 	var _name = 'roomlistCtrl';
 	if(roomList.checkListener(_name)){
 		$scope.roomList = roomList.list();
@@ -14,6 +14,9 @@ app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','use
 		});
 		roomList.emit();
 	}
+
+	// 通知侧栏
+	roomInfo.info('list');
 
 	$scope.toggleSubscript = function(_id,hasPassword){
 		var options = {_id:_id};
@@ -149,14 +152,13 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 				confirmPassword:''
 			}
 		});
-
 	}
 }]);
 
 app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid',
 	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid){
-		var _self = userSelf.self();
-		var _name = 'roomCtrl';
+		var _self  = userSelf.self();
+		var _name  = 'roomCtrl';
 		var roomId = $stateParams.roomId;
 
 		if(!_self){
@@ -211,13 +213,13 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		// 老的数据没有绑定到新的作用域上面来
 		$scope.onlineList = [];
 		roomUserList.addListener(_name,roomId,function(room){
-			$scope.onlineList = room.users;
+			$scope.onlineList  = room.users;
 			$scope.onlineCount = room.users.length;
 		});
 
 		messageList.addListener(_name,roomId,function(data){
 			$scope.messageCount = data.length;
-			$scope.messageList = data;
+			$scope.messageList  = data;
 		});
 		// }
 		

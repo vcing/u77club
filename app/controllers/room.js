@@ -175,8 +175,26 @@ function room(){
 		},
 		listbyids:function(req,res){
 			var _ids = req.param('_ids');
-			models.room.find({_id:{$in:_ids}}).exec(errorHandle(req,type,function(rooms){
-				req.socket.emit('room:listbyids',rooms);
+			models.room.find({_id:{$in:_ids}}).select('_id name description owner created users').exec(errorHandle(req,type,function(rooms){
+				models.userRoomActive.getUserMessageRemind(req,function(result){
+					if(result){
+						var _rooms = [];
+						_.forEach(rooms,function(room,index){
+							_rooms[index] = {};
+							_rooms[index]._id = room._id;
+							_rooms[index].name = room.name;
+							_rooms[index].description = room.description;
+							_rooms[index].owner = room.owner;
+							_rooms[index].created = room.created;
+							_rooms[index].users = room.users;
+							_rooms[index].messageRemind = result[room._id];
+						});
+						req.socket.emit('room:listbyids',_rooms);	
+					}else{
+						req.socket.emit('room:listbyids',rooms);
+					}
+					
+				});
 			}));
 		},
 		userlist:function(req,res){
@@ -210,6 +228,9 @@ function room(){
 					req.socket.emit('room:permission',{_id:req.param('roomId'),status:101,msg:'no permission'});
 				}
 			});
+		},
+		updateactive:function(req,res){
+			models.userRoomActive.addRoomActive(req);
 		}
 	});
 }

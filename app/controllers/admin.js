@@ -17,6 +17,7 @@ function admin(){
 		models.user.remove({},function(){});
 		models.usermessage.remove({},function(){});
 		models.roomPermission.remove({},function(){});
+		models.userRoomActive.remove({},function(){});
 		res.send('ok');
 	});
 }

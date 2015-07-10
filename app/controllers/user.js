@@ -40,7 +40,7 @@ function user(){
 			if(err){
 				res.send('注册出错');
 			}else{
-				res.send('注册成功');
+				res.redirect('/index.html');
 			}
 		});
 	});

@@ -63,7 +63,8 @@ function connection(){
 		
 		addOnline(socket);
 		
-		socket.on('disconnect',function(){		
+		socket.on('disconnect',function(){
+			console.log('disconnect');
 			removeOnline(socket);
 			var _onlineList = onlineList();
 			_.forEach(socket.session.user.rooms,function(room){

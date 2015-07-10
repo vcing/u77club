@@ -13,9 +13,9 @@ app.service('userSelf',['socket','$q','roomListByIds',function(socket,$q,roomLis
 		fresh(data);
 	});
 
-	socket.addListener('user:online',function(data){
-		fresh(data);
-	});
+	// socket.addListener('user:online',function(data){
+	// 	fresh(data);
+	// });
 
 	return {
 		emit:function(options){
