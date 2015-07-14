@@ -1,4 +1,4 @@
-<div class="room" ng-class="{true:'sidebar-open'}[sidebarToggle]">
+<div class="room" ng-class="{true:'sidebar-open'}[roomSidebarToggle]">
 	<div class="chat">
 		<div class="header">		
 			<div class="meta">
@@ -9,7 +9,7 @@
 				<div class="description">{{room.description}}</div>
 			</div>
 			<div class="actions">
-				<a class="sidebar-toggle" ng-click='sidebarToggle=!sidebarToggle'>
+				<a class="sidebar-toggle" ng-click='roomSidebarToggle=!roomSidebarToggle'>
 					<i class="fa fa-chevron-left"></i>
 				</a>
 			</div>

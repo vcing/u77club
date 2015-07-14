@@ -15,8 +15,6 @@ app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','use
 		roomList.emit();
 	}
 
-	// 通知侧栏
-	roomInfo.info('list');
 
 	$scope.toggleSubscript = function(_id,hasPassword){
 		var options = {_id:_id};

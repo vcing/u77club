@@ -49,10 +49,20 @@ app.config(['$stateProvider','$urlRouterProvider',
 	}]);
 
 
-app.run(['socket','userSelf',
-	function(socket,userSelf){
-		// user
-		socket.addListener('user:online',function(user){
-			userSelf.setSelf(user);
+app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','roomInfo',
+	function(socket,userSelf,$rootScope,$urlRouter,$state,$stateParams,roomInfo){
+		$rootScope.$state = $state;
+		$rootScope.$stateParams = $stateParams;
+		$rootScope.$on('$locationChangeSuccess',function(evt){
+			if(!$stateParams.roomId)roomInfo.info('list');
+			evt.preventDefault();
+			$urlRouter.sync();
 		});
+
+		socket.addListener('user:online',function(user){
+			userSelf.setSelf(user,true);
+		});
+
+		// 初始化侧栏
+		$rootScope.sideBarToggle = false;
 	}]);

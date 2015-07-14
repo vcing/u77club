@@ -22,7 +22,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body ng-app='u77club'>
-<div id='u77club' ui-view='main'></div>
+<div id='u77club' ui-view='main' ng-class="{true:'sidebar-open'}[$rootScope.sideBarToggle]"></div>
 <!-- <div create-room></div> -->
 </body>
 </html>

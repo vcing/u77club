@@ -36,9 +36,9 @@ app.service('userSelf',['socket','$q','roomListByIds',function(socket,$q,roomLis
 		self:function(){
 			return _user;
 		},
-		setSelf:function(user){
+		setSelf:function(user,isInit){
 			_user = user;
-			fresh(user);
+			if(!isInit)fresh(user);
 		},
 		promise:function(options){
 			var deferred = $q.defer();

@@ -10,6 +10,7 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 			$scope.user = user;
 		});
 
+
 		// 给roominfo设置侧栏监听器 如果触发则更新侧栏信息
 		roomInfo.setSideBarAction(function(_id){
 			$scope.current = _id;

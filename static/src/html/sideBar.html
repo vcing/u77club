@@ -3,9 +3,9 @@
 		<img class='avatar' ng-src='http://img.u77.com/avatar/{{user.avatar}}!avatar'>
 		<span class="nickname" ng-bind='user.nickname'></span>
 		<!-- <span class="username">@vcing</span> -->
-		<i class="fa fa-chevron-down"></i>
+		<i class="fa fa-home"></i>
 	</a>
-	<ul class='menu'>
+<!-- 	<ul class='menu'>
 		<li>
 			<a data-toggle="modal" href="#lcb-profile">
 				<i class="fa fa-fw fa-edit"></i> 修改档案
@@ -28,18 +28,47 @@
         </li>
         <li class="divider"></li>
         <li><a href="./logout"><i class="fa fa-fw fa-sign-out"></i> 登出</a></li>
-	</ul>
+	</ul> -->
 </div>
 <div class="status">
 	<span class="disconnect"><i class="fa fa-plug"></i>离线</span>
 	<span class="connect"><i class="fa fa-refresh"></i>在线</span>
 </div>
 <div class="tabs-wrap">
-	<ul class="tabs">
-		<li class="tab home" ui-sref='main'>
-            <a>
-                <i class="fa fa-th"></i>
-            </a>
+	<ul class="tabs-menu">
+		<li class="tab home">
+			<a><i class="fa fa-th"></i></a>
+		</li>
+		<li class="tab menu">
+			<a >
+				<span class="title">房间</span>
+	            <span class="alert">
+	                <span class="mentions"></span>
+	                <span class="total"></span>
+	            </span>
+			</a>
+		</li>
+		<li class="tab menu">
+			<a >
+				<span class="title">消息</span>
+	            <span class="alert">
+	                <span class="mentions"></span>
+	                <span class="total"></span>
+	            </span>
+			</a>
+		</li>
+		<li class="tab menu">
+			<a >
+				<span class="title">设置</span>
+			</a>
+		</li>
+	</ul>
+	<ul class="tabs-room">
+		<li class="tab back">
+			<a><i class="fa fa-chevron-left"></i></a>
+		</li>
+		<li class="tab home" ui-sref='main' ng-class="{true:'active'}[!$stateParams.roomId]">
+            <a><i class="fa fa-th"></i></a>
         </li>
         <li class='tab room' ng-repeat='room in rooms' ui-sref-active='active'>
         	<a ui-sref='main.room({roomId:room._id})'>
@@ -51,5 +80,23 @@
 	            <span class="close">×</span>
 	        </a>
         </li>
+	</ul>
+	<ul class="tabs-friend">
+		<li class="tab back">
+			<a><i class="fa fa-chevron-left"></i></a>
+		</li>
+		<li class="tab home">
+			<a><i class="fa fa-th"></i></a>
+		</li>
+		<li class="tab friend">
+			<a >
+				<span class="title">Vcing</span>
+	            <span class="alert">
+	                <span class="mentions"></span>
+	                <span class="total"></span>
+	            </span>
+	            <span class="close">×</span>
+			</a>
+		</li>
 	</ul>
 </div>

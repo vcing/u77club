@@ -13,16 +13,6 @@
 	text-align: center;
 }
 
-.sidebar-open{
-	@media (max-width:767px){
-		-webkit-transform: translateX(200px);
-		-moz-transform: translateX(200px);
-		-ms-transform: translateX(200px);
-		-o-transform: translateX(200px);
-		transform: translateX(200px);
-	}
-}
-
 #u77club{
 	background: #222;
 	width: 100%;
@@ -341,14 +331,12 @@
 		}
 
 		.room.sidebar-open{
-			.sidebar{
-				@media (min-width:991px){
-					display: -webkit-flex;
-					display: -moz-flex;
-					display: -ms-flexbox;
-					display: -ms-flex;
-					display: flex;	
-				}
+			@media (max-width:767px){
+				-webkit-transform: translateX(-200px);
+				-moz-transform: translateX(-200px);
+				-ms-transform: translateX(-200px);
+				-o-transform: translateX(-200px);
+				transform: translateX(-200px);
 			}
 			.sidebar-toggle{
 				-webkit-transform: rotateY(180deg);
@@ -358,6 +346,16 @@
 				transform: rotateY(180deg);				
 			}
 		}
+	}
+}
+
+#u77club.sidebar-open{
+	@media (max-width:767px){
+		-webkit-transform: translateX(200px);
+		-moz-transform: translateX(200px);
+		-ms-transform: translateX(200px);
+		-o-transform: translateX(200px);
+		transform: translateX(200px);
 	}
 }
 
@@ -379,7 +377,7 @@
 		display:block;
 	}
 
-	.side-toggle{
+	.menu-toggle{
 		width: 40px;
 		height: 30px;
 		line-height: 100%;
@@ -400,10 +398,13 @@
 // 侧栏
 #sidebar{
 
-	background:#222;
-	position:relative;
-	width:200px;
-	height:100%;
+	background: #222;
+	width: 200px;
+	min-width: 200px;
+	height: 100%;
+	border-right: 1px #333 solid;
+	position: relative;
+	z-index: 1;
 	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flexbox;
@@ -417,7 +418,6 @@
 	-webkit-flex-direction: column;
 	-ms-flex-direction: column;
 	flex-direction: column;
-	border-right: 1px #333 solid;
 
 	@media (max-width:767px){
 		height: 100%;
@@ -618,7 +618,9 @@
 		-ms-flex: 1;
 		flex: 1;
 
-		.tabs{
+		.tabs-menu,
+		.tabs-friend,
+		.tabs-room{
 			border: 1px #333 solid;
 			border-top-color: #111;
 			border-left: none;

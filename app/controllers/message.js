@@ -48,11 +48,26 @@ function message(){
 			}));
 		},
 		private:function(req,res){
-			clients = onlineList()[req.param('_id')];
-			_.forEach(clients,function(client){
-				req.socket.broadcast.to(client).emit('message:private',req.param('content'));
-			});
-			
+			var type = 'private message';
+			models.user.findById(req.param('_id')).exec(errorHandle(req,type,function(user){
+				if(user){
+					var msg = new models.userMessage({
+						receivers:user._id,
+						sender:req.session.user._id,
+						text:req.param('content')
+					});
+					msg.save();
+					clients = onlineList()[req.param('_id')];
+					if(clients){
+						// 如果在线
+						_.forEach(clients,function(client){
+							app.io.sockets.connected[client].emit('message:private',req.param('content'));
+						});	
+					}
+				}else{
+					req.socket.emit('message:private',{status:101,msg:'user not find'});
+				}
+			}));
 		}
 	});
 }
