@@ -1,5 +1,5 @@
 <div class="dropdown">
-	<a class="toggle" data-toggle='dropdown'>
+	<a class="toggle" data-toggle='dropdown' ui-sref='main'>
 		<img class='avatar' ng-src='http://img.u77.com/avatar/{{user.avatar}}!avatar'>
 		<span class="nickname" ng-bind='user.nickname'></span>
 		<!-- <span class="username">@vcing</span> -->
@@ -35,12 +35,12 @@
 	<span class="connect"><i class="fa fa-refresh"></i>在线</span>
 </div>
 <div class="tabs-wrap">
-	<ul class="tabs-menu">
+	<ul class="tabs-menu"  ng-class="{'menu':'active'}[tab]">
 		<li class="tab home">
-			<a><i class="fa fa-th"></i></a>
+			<a ng-click="tab='menu'" ui-sref='main'><i class="fa fa-home"></i></a>
 		</li>
-		<li class="tab menu">
-			<a >
+		<li class="tab menu" ng-class="{true:'active'}[currentRoomId != undefined]">
+			<a  ng-click="tab='room'">
 				<span class="title">房间</span>
 	            <span class="alert">
 	                <span class="mentions"></span>
@@ -49,7 +49,7 @@
 			</a>
 		</li>
 		<li class="tab menu">
-			<a >
+			<a  ng-click="tab='friend'" ng-class="{true:'active'}[currentFriendId != undefined]">
 				<span class="title">消息</span>
 	            <span class="alert">
 	                <span class="mentions"></span>
@@ -63,11 +63,11 @@
 			</a>
 		</li>
 	</ul>
-	<ul class="tabs-room">
+	<ul class="tabs-room" ng-class="{'room':'active'}[tab]">
 		<li class="tab back">
-			<a><i class="fa fa-chevron-left"></i></a>
+			<a ng-click="tab='menu'"><i class="fa fa-chevron-left"></i></a>
 		</li>
-		<li class="tab home" ui-sref='main' ng-class="{true:'active'}[!$stateParams.roomId]">
+		<li class="tab home" ui-sref='main.rooms' ng-class="{true:'active'}[!$stateParams.roomId]">
             <a><i class="fa fa-th"></i></a>
         </li>
         <li class='tab room' ng-repeat='room in rooms' ui-sref-active='active'>
@@ -81,9 +81,9 @@
 	        </a>
         </li>
 	</ul>
-	<ul class="tabs-friend">
+	<ul class="tabs-friend" ng-class="{'friend':'active'}[tab]">
 		<li class="tab back">
-			<a><i class="fa fa-chevron-left"></i></a>
+			<a ng-click="tab='menu'"><i class="fa fa-chevron-left"></i></a>
 		</li>
 		<li class="tab home">
 			<a><i class="fa fa-th"></i></a>

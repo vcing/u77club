@@ -86,8 +86,8 @@ app.service('messageList',['socket',function(socket){
 	}
 }]);
 
-app.service('messageRemind',['$scope','socket','$q',
-	function($scope,socket,$q){
+app.service('messageRemind',['socket','$q',
+	function(socket,$q){
 		return {
 			promise:function(options){
 				var deffered = $q.defer();
@@ -99,3 +99,93 @@ app.service('messageRemind',['$scope','socket','$q',
 			}
 		}
 	}]);
+
+app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','userPrivateList',
+	function(socket,$rootScope,$q,$modal,userSelf,userPrivateList){
+
+		var _cb = {};		//存回调函数的
+		var _list = {};		//存消息列表的
+		var _count = {};	//存导航栏显示未读数目的
+
+		// 从服务器获取数据 初始化未读消息条数
+		userPrivateList.promise().then(function(result){
+			_count = result;
+		});
+
+		function getPrivateMessages(_id){
+			var deffered = $q.defer();
+			socket.emit('message:listPrivate',{_id:_id});
+			socket.on('message:listPrivate',function(data){
+				_list[_id] = data.list;
+				deffered.resolve(data);
+			});
+			return deffered.promise;
+		}
+
+		function openPrivateMessage(_id){
+			var messageList = getPrivateMessages(_id);
+				messageList.then(function(data){
+				var createPrivateModal = $modal.open({
+					animation:true,
+					templateUrl:'/message/private.html',
+					controller:'messagePrivateCtrl',
+					windowClass:'private-modal',
+					resolve:{
+						list:function(){
+							return data.list;
+						},
+						user:function(){
+							return data.user;
+						}
+					}
+				});	
+			});
+			
+		}
+
+		socket.addListener('message:private',function(data){
+			var _id = data.sender == userSelf.self()._id ? data.receiver : data.sender;
+			if(_list[_id]){
+				_list[_id].push(data)
+			}else{
+				_list[_id] = [data];
+			}
+			angular.forEach(_cb,function(cb){
+				cb(data);
+			})
+		})
+
+		$rootScope.openPrivateMessage = openPrivateMessage;
+
+		return {
+			
+			emit:function(options){
+				socket.emit('message:private',options);
+			},
+			addListener:function(name,cb){
+				_cb[name] = cb;
+			},
+			removeListener:function(name){
+				delete _cb[name];
+			},
+			checkListener:function(name){
+				if(_cb[name]){
+					return true;
+				}else{
+					return false;
+				}
+			},
+			list:function(_id){
+				return _list[_id];
+			},
+			chatting:function(_id){
+				// 正在对话的房间
+			},
+			count:function(){
+				return _count;
+			},
+			openPrivateMessage:openPrivateMessage,
+		}
+		
+	}]);
+

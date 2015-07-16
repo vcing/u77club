@@ -42,11 +42,25 @@ app.service('userSelf',['socket','$q','roomListByIds',function(socket,$q,roomLis
 		},
 		promise:function(options){
 			var deferred = $q.defer();
-			socket.emit('user:selft',options);
-			socket.on('user:selft',function(data){
+			socket.emit('user:self',options);
+			socket.on('user:self',function(data){
 				deferred.resolve(data);
 			});
 			return deferred.promise;
 		}
 	}
 }]);
+
+app.service('userPrivateList',['socket','$q',
+	function(socket,$q){
+		return {
+			promise:function(options){
+				var deffered = $q.defer();
+				socket.emit('user:privateList',options);
+				socket.on('user:privateList',function(data){
+					deffered.resolve(data);
+				})
+				return deffered.promise;
+			}
+		}
+	}]);

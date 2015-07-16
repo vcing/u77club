@@ -22,6 +22,15 @@ app.config(['$stateProvider','$urlRouterProvider',
 				views:{
 					'main':{
 						templateUrl:'main.html',
+						controller:'indexCtrl',
+					}
+				}
+			})
+			.state('main.rooms',{
+				url:'room',
+				views:{
+					'content':{
+						templateUrl:'room/main.html',
 						controller:'roomListCtrl',
 					}
 				}
@@ -49,8 +58,8 @@ app.config(['$stateProvider','$urlRouterProvider',
 	}]);
 
 
-app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','roomInfo',
-	function(socket,userSelf,$rootScope,$urlRouter,$state,$stateParams,roomInfo){
+app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','roomInfo','messagePrivate',
+	function(socket,userSelf,$rootScope,$urlRouter,$state,$stateParams,roomInfo,messagePrivate){
 		$rootScope.$state = $state;
 		$rootScope.$stateParams = $stateParams;
 		$rootScope.$on('$locationChangeSuccess',function(evt){

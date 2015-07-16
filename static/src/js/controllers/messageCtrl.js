@@ -43,3 +43,43 @@ app.controller('messageListCtrl',['$scope','messageList','$stateParams','userSel
 			return list;
 		}
 	}]);
+
+app.controller('messagePrivateCtrl',['$scope','$modalInstance','user','list','messagePrivate','userSelf',
+	function($scope,$modalInstance,user,list,messagePrivate,userSelf){
+		var self = userSelf.self();
+		$scope.user = user;
+		$scope.list = classHandle(list);
+		$scope.self = self;
+		$scope.cancel = function(){
+			$modalInstance.dismiss('cancel');
+		}
+
+		$scope.send = function(){
+			messagePrivate.emit({_id:user._id,text:$scope.text});
+			$scope.text = '';
+		}
+
+		messagePrivate.addListener('messagePrivate',function(data){
+			if(data.reciever == self._id || data.sender == self._id){
+				$scope.list = classHandle(messagePrivate.list(user._id));
+			}
+		});
+
+		function classHandle(list){
+			angular.forEach(list,function(message,index){
+				message.class = '';
+				// 如果上条消息也是该用户发表的
+				// 则显示为碎片模式
+				if(index > 0 && list[index].sender == list[index-1].sender){
+					message.class += ' fragment';
+				}
+
+				// 我发的
+				if(message.sender == self._id){
+					message.class += ' own';
+				}
+			});
+
+			return list;
+		}
+	}]);

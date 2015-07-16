@@ -10,6 +10,8 @@ var errorHandle = require('../common').errorHandle;
 
 var message = require('./message');
 
+var userMessage = require('./userMessage');
+
 var RoomLastActiveSchema = new mongoose.Schema({
 	room:{
 		type:String,
@@ -21,6 +23,21 @@ var RoomLastActiveSchema = new mongoose.Schema({
 	}
 });
 
+var PrivateLastActiveSchema = new mongoose.Schema({
+	user:{
+		type:String,
+		require:true
+	},
+	lastActive:{
+		type:Date,
+		default:Date.now
+	},
+	status:{
+		type:Number,
+		default:1
+	}
+})
+
 var UserRoomActiveSchema = new mongoose.Schema({
 	user:{
 		type: String,
@@ -28,13 +45,13 @@ var UserRoomActiveSchema = new mongoose.Schema({
         unique: true
 	},
 	roomLastActive:[RoomLastActiveSchema],
+	privateLastActive:[PrivateLastActiveSchema]
 });
 
 UserRoomActiveSchema.statics.addRoomActive = function(req){
 	var type = 'addRoomActive';
 	var _this = this;
 	this.findOne({user:req.session.user._id}).exec(errorHandle(req,type,function(active){
-
 		if(active){
 			var _haveActive = false;
 			_.forEach(active.roomLastActive,function(lastActive){
@@ -56,7 +73,8 @@ UserRoomActiveSchema.statics.addRoomActive = function(req){
 		}else{
 			var options = {
 				user:req.session.user._id,
-				roomLastActive:[]
+				roomLastActive:[],
+				privateLastActiveSchema:[]
 			}
 			if(req.param('_id'))options.roomLastActive.unshift({room:req.param('_id')});
 
@@ -133,5 +151,101 @@ UserRoomActiveSchema.statics.getUserMessageRemind = function(req,cb){
 		
 	})
 }
+
+
+UserRoomActiveSchema.statics.addPrivateActive = function(req){
+	var type = 'addPrivateActive';
+	var _this = this;
+	this.findOne({user:req.session.user._id}).exec(errorHandle(req,type,function(active){
+		if(active){
+			var _haveActive = false;
+			_.forEach(active.privateLastActive,function(lastActive){
+				if(lastActive.user == req.param('_id')){
+					lastActive.lastActive = Date.now();
+					_haveActive = true;
+				}
+			});
+
+			if(!_haveActive){
+				active.privateLastActive.unshift({
+					user:req.param('_id'),
+					lastActive:Date.now(),
+					status:1
+				});
+			}
+
+			active.markModified('privateLastActive');
+			active.save();
+
+		}else{
+			var options = {
+				user:req.session.user._id,
+				roomLastActive:[],
+				privateLastActiveSchema:[]
+			}
+			if(req.param('_id'))options.privateLastActive.unshift({user:req.param('_id')});
+
+			var _active = new _this(options);
+			
+			_active.save(errorHandle(req,type));
+		}
+	}));
+}
+
+UserRoomActiveSchema.statics.hidePrivateActive = function(req){
+	var type = 'hidePrivateActive';
+	this.findOne({user:req.session.user._id}).exec(errorHandle(req,type,function(active){
+		if(active){
+			_.forEach(active.privateLastActive,function(lastActive){
+				if(lastActive.user == req.param('_id')){
+					lastActive.status = 2;
+				}
+			});
+		}else{
+			req.socket.emit('system:error','can not hide this private message box');
+		}
+
+		active.markModified('privateLastActive');
+		active.save(errorHandle(req,type));
+	}));
+}
+
+UserRoomActiveSchema.statics.getPrivateMessageRemind = function(req,cb){
+	var type = 'getPrivateMessageRemind';
+	var result = {};
+	var _this = this;
+	this.getUserActives(req,function(actives){
+		if(!actives){
+			_this.addPrivateActive(req);
+			cb();
+		}else{
+			_.forEach(actives.privateLastActive,function(active,index){
+				// OMG
+				// 这里是查询有多少条未读私信的查询语句
+				userMessage.count({
+					"$or":[{
+						sender:req.session.user._id,
+						receiver:active.user
+					},{
+						receiver:req.session.user._id,
+						sender:active.user
+					}],
+					date:{"$gt":active.lastActive}
+				},errorHandle(req,type,function(count){
+					result[active.user] = count;
+					if(index + 1 == actives.privateLastActive.length){
+						cb(result);
+					}
+				}));
+			});
+			if(actives.roomLastActive.length == 0){
+				_this.addRoomActive(req);
+				cb();
+			}
+		}
+		
+	})
+}
+
 
 module.exports = mongoose.model('UserRoomActive', UserRoomActiveSchema);

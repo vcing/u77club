@@ -38,6 +38,7 @@ function user(){
 		var user = new models.user(req.body);
 		user.save(function(err){
 			if(err){
+				console.log(err);
 				res.send('注册出错');
 			}else{
 				res.redirect('/index.html');
@@ -52,7 +53,11 @@ function user(){
 				req.session.save();
 				req.socket.emit(type+':self',user);
 			}))
-			
+		},
+		privateList:function(req,res){
+			models.userRoomActive.getPrivateMessageRemind(req,function(result){
+				console.log(result);
+			});
 		}
 	})
 

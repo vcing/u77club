@@ -1,0 +1,42 @@
+
+<div class="wrap">
+	<div class="header">
+		<h2>所有房间</h2>
+		<div class="search">
+			<label for='search-input'><i class="fa fa-search"></i></label>
+			<input id="search-input" type='search' autofocus></input>
+		</div>
+		 <!-- ui-sref='main.createroom' -->
+		<a class="new btn btn-success" ng-click='showCreateRoom()'><i class="fa fa-plus"></i></a>
+	</div>
+	<ul class='list'>
+		<li class='item' ng-repeat='room in roomList'>
+			<div class='top'>
+				<span class="locked fa fa-lock" ng-show="room.type == 2"></span>
+				<a class="name" ui-sref='main.room({roomId:room._id})' ng-if="room.type == 1">{{room.name}}</a>
+				<a class="name" ng-if="room.type == 2" ng-click='valid(room._id,room.name,room.isSubscribe)'>{{room.name}}</a>
+			</div>
+			<div class="description">
+				{{room.description}}
+			</div>
+			<ul class="users">
+				<li class="user" ng-repeat='user in room.users'>
+					<img class='avatar' ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar" alt='{{user.nickname}}'  ng-click='openPrivateMessage(user._id)'>
+				</li>
+			</ul>
+			<div class="switch-wrap"  ng-if="room.type == 1">
+				<input class='switch-input' type='checkbox' id='room-switch-{{room._id}}' ng-checked='room.isSubscribe'>
+				<label class='switch' for='room-switch-{{room._id}}' ng-click='toggleSubscript(room._id)'></label>
+				
+			</div>
+			<div class="switch-wrap" ng-if="room.type == 2">
+				<input class='switch-input' type='checkbox' id='room-switch-{{room._id}}' ng-checked='room.isSubscribe' ng-disabled="1">
+				<label class='switch' for='room-switch-{{room._id}}' ng-click='validSubscript(room._id,room.name,room.isSubscribe)'></label>
+			</div>
+			<div class="last-active">
+				<i class="fa fa-clock-o"></i>
+				<span class='time'>{{room.lastActive}}</span>
+			</div>
+		</li>
+	</ul>
+</div>

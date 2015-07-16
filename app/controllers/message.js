@@ -52,22 +52,45 @@ function message(){
 			models.user.findById(req.param('_id')).exec(errorHandle(req,type,function(user){
 				if(user){
 					var msg = new models.userMessage({
-						receivers:user._id,
+						receiver:user._id,
 						sender:req.session.user._id,
-						text:req.param('content')
+						text:req.param('text')
 					});
 					msg.save();
+					models.userRoomActive.addPrivateActive(req);
 					clients = onlineList()[req.param('_id')];
 					if(clients){
 						// 如果在线
 						_.forEach(clients,function(client){
-							app.io.sockets.connected[client].emit('message:private',req.param('content'));
+							app.io.sockets.connected[client].emit('message:private',msg);
+							req.socket.emit('message:private',msg);
 						});	
 					}
 				}else{
 					req.socket.emit('message:private',{status:101,msg:'user not find'});
 				}
 			}));
+		},
+		listPrivate:function(req,res){
+			var type = 'private message list';
+			models.user.findById(req.param('_id')).exec(errorHandle(req,type,function(user){
+				if(user){
+					models.userRoomActive.addPrivateActive(req);
+					models.userMessage.find({"$or":[
+						{
+							sender:req.session.user._id,
+							receiver:user._id
+						},
+						{
+							sender:user._id,
+							receiver:req.session.user._id
+						}]}).exec(errorHandle(req,type,function(messages){
+						req.socket.emit('message:listPrivate',{user:user,list:messages});
+					}));
+				}else{
+					req.socket.emit('message:listPrivate',{status:101,msg:'user not find'});	
+				}
+			}))
 		}
 	});
 }

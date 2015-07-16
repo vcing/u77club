@@ -162,7 +162,6 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		if(!_self){
 			userSelf.emit();
 		}
-
 		// 从这里开始
 		if(!roomInfo.info(roomId)){
 			roomInfo.promise({_id:roomId})
@@ -209,7 +208,8 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		// 这里每次进入房间需要重新绑定监听器 
 		// 因为link 中的dom是新的 
 		// 老的数据没有绑定到新的作用域上面来
-		$scope.onlineList = [];
+		$scope.onlineList = roomUserList.list(roomId) ? roomUserList.list(roomId).users : [];
+		$scope.onlineCount = $scope.onlineList ? $scope.onlineList.length : 0;
 		roomUserList.addListener(_name,roomId,function(room){
 			$scope.onlineList  = room.users;
 			$scope.onlineCount = room.users.length;

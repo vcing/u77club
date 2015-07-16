@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var UserMessageSchema = new mongoose.Schema({
-    receivers: {
+    receiver: {
         type: ObjectId,
         ref: 'User',
         index:true
