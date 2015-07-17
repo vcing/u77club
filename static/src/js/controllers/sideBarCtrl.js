@@ -1,17 +1,36 @@
 app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds','messageNew','roomInfo','roomUpdateActive','messagePrivate',
 	function($scope,$stateParams,userSelf,roomListByIds,messageNew,roomInfo,roomUpdateActive,messagePrivate){
 		var _name = 'sideBarCtrl';
-		var _user = userSelf.self();
-		// 当前激活房间ID
-		$scope.currentRoomId = $stateParams.roomId;
-		$scope.user = _user;
-		$scope.count = messagePrivate.count();
 
-		
-		userSelf.addListener(_name,function(user){
+
+		userSelf.promise().then(function(user){
+			$scope.user = user;	
 			_user = user;
-			$scope.user = user;
+			userSelf.addListener(_name,function(user){
+				_user = user;
+				$scope.user = user;
+			});
 		});
+
+		// 获取私聊记录
+		// promise防止记录为空
+		var _record = messagePrivate.record();
+		if(_record.then){
+			_record.then(function(record){
+				$scope.record = record;
+			});
+		}else{
+			$scope.record = _record;
+		}
+
+		// 当前激活房间ID
+		$scope.currentRoomId      = $stateParams.roomId;
+		$scope.openPrivateMessage = messagePrivate.openPrivateMessage;
+		messagePrivate.addListener(_name,function(){
+			$scope.record = messagePrivate.record();
+		})
+		
+		
 
 
 		// 给roominfo设置侧栏监听器 如果触发则更新侧栏信息
@@ -48,9 +67,6 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 					}
 				});
 			});
-		}
-		if(_user){
-			userSelf.emit();
 		}
 
 		// 初始化侧栏菜单

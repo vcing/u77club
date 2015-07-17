@@ -15,7 +15,7 @@ function admin(){
 		models.room.remove({},function(){});
 		models.message.remove({},function(){});
 		models.user.remove({},function(){});
-		models.usermessage.remove({},function(){});
+		models.userMessage.remove({},function(){});
 		models.roomPermission.remove({},function(){});
 		models.userRoomActive.remove({},function(){});
 		res.send('ok');

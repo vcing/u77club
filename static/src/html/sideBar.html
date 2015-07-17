@@ -88,12 +88,12 @@
 		<li class="tab home">
 			<a><i class="fa fa-th"></i></a>
 		</li>
-		<li class="tab friend">
-			<a >
-				<span class="title">Vcing</span>
+		<li class="tab friend" ng-repeat="_record in record">
+			<a ng-click="openPrivateMessage(_record.user._id)">
+				<span class="title" ng-bind="_record.user.nickname">Vcing</span>
 	            <span class="alert">
 	                <span class="mentions"></span>
-	                <span class="total"></span>
+	                <span class="total" ng-bind="_record.count" ng-show="_record.count != 0"></span>
 	            </span>
 	            <span class="close">×</span>
 			</a>

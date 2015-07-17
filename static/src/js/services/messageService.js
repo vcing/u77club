@@ -105,12 +105,7 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 
 		var _cb = {};		//存回调函数的
 		var _list = {};		//存消息列表的
-		var _count = {};	//存导航栏显示未读数目的
-
-		// 从服务器获取数据 初始化未读消息条数
-		userPrivateList.promise().then(function(result){
-			_count = result;
-		});
+		var _record = {};	//存导航栏显示未读数目的
 
 		function getPrivateMessages(_id){
 			var deffered = $q.defer();
@@ -123,10 +118,12 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 		}
 
 		function openPrivateMessage(_id){
+			if(_record[_id])_record[_id].count = 0;
 			var messageList = getPrivateMessages(_id);
 				messageList.then(function(data){
 				var createPrivateModal = $modal.open({
 					animation:true,
+					backdrop:false,
 					templateUrl:'/message/private.html',
 					controller:'messagePrivateCtrl',
 					windowClass:'private-modal',
@@ -145,17 +142,35 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 
 		socket.addListener('message:private',function(data){
 			var _id = data.sender == userSelf.self()._id ? data.receiver : data.sender;
+			// 添加到私聊数据到缓存数组中
 			if(_list[_id]){
 				_list[_id].push(data)
 			}else{
 				_list[_id] = [data];
+			}
+			// 添加私聊记录
+			if(_record[_id]){
+				_record[_id].count++;
+			}else{
+				// 如果没有记录 则重新从服务器获取记录
+				userPrivateList.promise().then(function(result){
+					_record = result;
+				});
 			}
 			angular.forEach(_cb,function(cb){
 				cb(data);
 			})
 		})
 
+		// 绑定到根作用域
 		$rootScope.openPrivateMessage = openPrivateMessage;
+
+		// 判断空对象
+		function isEmptyObject(obj){
+		    for(var n in obj){return false} 
+		    return true; 
+		} 
+
 
 		return {
 			
@@ -178,11 +193,22 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 			list:function(_id){
 				return _list[_id];
 			},
-			chatting:function(_id){
+			clearCount:function(_id){
 				// 正在对话的房间
+				if(_record[_id])_record[_id].count = 0;
 			},
-			count:function(){
-				return _count;
+			record:function(){
+				var deffered = $q.defer();
+				// 从服务器获取数据 初始化未读消息条数
+				if(!isEmptyObject(_record))return _record;
+				userPrivateList.promise().then(function(result){
+					_record = result;
+					deffered.resolve(_record);
+				});
+				return deffered.promise;
+			},
+			updateActive:function(_id){
+				socket.emit('message:updateActive',{_id:_id});
 			},
 			openPrivateMessage:openPrivateMessage,
 		}

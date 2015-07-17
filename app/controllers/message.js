@@ -64,7 +64,7 @@ function message(){
 						_.forEach(clients,function(client){
 							app.io.sockets.connected[client].emit('message:private',msg);
 							req.socket.emit('message:private',msg);
-						});	
+						});
 					}
 				}else{
 					req.socket.emit('message:private',{status:101,msg:'user not find'});
@@ -84,13 +84,18 @@ function message(){
 						{
 							sender:user._id,
 							receiver:req.session.user._id
-						}]}).exec(errorHandle(req,type,function(messages){
+						}]})
+					.sort("date")
+					.exec(errorHandle(req,type,function(messages){
 						req.socket.emit('message:listPrivate',{user:user,list:messages});
 					}));
 				}else{
 					req.socket.emit('message:listPrivate',{status:101,msg:'user not find'});	
 				}
 			}))
+		},
+		updateActive:function(req,res){
+			models.userRoomActive.addPrivateActive(req);
 		}
 	});
 }

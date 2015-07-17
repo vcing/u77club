@@ -51,6 +51,7 @@ app.controller('messagePrivateCtrl',['$scope','$modalInstance','user','list','me
 		$scope.list = classHandle(list);
 		$scope.self = self;
 		$scope.cancel = function(){
+			messagePrivate.removeListener('messagePrivate')
 			$modalInstance.dismiss('cancel');
 		}
 
@@ -60,8 +61,10 @@ app.controller('messagePrivateCtrl',['$scope','$modalInstance','user','list','me
 		}
 
 		messagePrivate.addListener('messagePrivate',function(data){
-			if(data.reciever == self._id || data.sender == self._id){
+			if(data.receiver == self._id || data.sender == self._id){
+				messagePrivate.clearCount(user._id);
 				$scope.list = classHandle(messagePrivate.list(user._id));
+				messagePrivate.updateActive(user._id);
 			}
 		});
 

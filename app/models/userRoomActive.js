@@ -162,6 +162,7 @@ UserRoomActiveSchema.statics.addPrivateActive = function(req){
 			_.forEach(active.privateLastActive,function(lastActive){
 				if(lastActive.user == req.param('_id')){
 					lastActive.lastActive = Date.now();
+					lastActive.status = 1;
 					_haveActive = true;
 				}
 			});
@@ -184,10 +185,41 @@ UserRoomActiveSchema.statics.addPrivateActive = function(req){
 				privateLastActiveSchema:[]
 			}
 			if(req.param('_id'))options.privateLastActive.unshift({user:req.param('_id')});
-
 			var _active = new _this(options);
-			
 			_active.save(errorHandle(req,type));
+		}
+	}));
+
+	// 给对方的私聊活动列表中加上我
+	this.findOne({user:req.param("_id")}).exec(errorHandle(req,type,function(active){
+		if(active){
+			var _haveActive = false;
+			_.forEach(active.privateLastActive,function(lastActive){
+				if(lastActive.user == req.session.user._id){
+					lastActive.status = 1;
+					_haveActive = true;
+				}
+			});
+
+			if(!_haveActive){
+				active.privateLastActive.unshift({
+					user:req.session.user._id,
+					lastActive:Date.now()-1,
+					status:1
+				})
+			}
+
+			active.markModified('privateLastActive');
+			active.save();
+		}else{
+			var options = {
+				user:req.session.user._id,
+				roomLastActive:[],
+				privateLastActiveSchema:[]
+			}
+			options.privateLastActive.unshift({user:req.session.user._id});
+			var _active = new _this(options);
+			_active.save(errorHandle(req,type));	
 		}
 	}));
 }
@@ -230,7 +262,8 @@ UserRoomActiveSchema.statics.getPrivateMessageRemind = function(req,cb){
 						receiver:req.session.user._id,
 						sender:active.user
 					}],
-					date:{"$gt":active.lastActive}
+					date:{"$gt":active.lastActive},
+					status:1
 				},errorHandle(req,type,function(count){
 					result[active.user] = count;
 					if(index + 1 == actives.privateLastActive.length){
@@ -238,9 +271,8 @@ UserRoomActiveSchema.statics.getPrivateMessageRemind = function(req,cb){
 					}
 				}));
 			});
-			if(actives.roomLastActive.length == 0){
-				_this.addRoomActive(req);
-				cb();
+			if(actives.privateLastActive.length == 0){
+				cb({});
 			}
 		}
 		

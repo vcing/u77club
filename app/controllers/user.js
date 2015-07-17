@@ -41,10 +41,17 @@ function user(){
 				console.log(err);
 				res.send('注册出错');
 			}else{
+				req.session.user = user;
+				req.session.save();
 				res.redirect('/index.html');
 			}
 		});
 	});
+	app.get('/logout',function(req,res){
+		delete req.session["user"];
+		req.session.save();
+		res.redirect('/login.html');
+	})
 
 	app.io.route(type,{
 		self:function(req,res){
@@ -55,8 +62,26 @@ function user(){
 			}))
 		},
 		privateList:function(req,res){
+			var type = 'privateList';
 			models.userRoomActive.getPrivateMessageRemind(req,function(result){
-				console.log(result);
+				var _users = [];
+				var _result = {};
+				_.forEach(result,function(data,index){
+					if(index != 'undefined')_users.unshift(index);
+				});
+				if(_users.length == 0){
+					req.socket.emit('user:privateList',_result);
+					return;
+				}
+				models.user.find({_id:{"$in":_users}}).exec(errorHandle(req,type,function(users){
+					_.forEach(users,function(user){
+						_result[user._id] = {
+							count:result[user._id],
+							user:user
+						}
+					});
+					req.socket.emit('user:privateList',_result);
+				}));
 			});
 		}
 	})
