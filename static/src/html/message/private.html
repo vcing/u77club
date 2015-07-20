@@ -3,8 +3,8 @@
     <h4 class="modal-title" ng-bind='user.nickname'></h4>
 </div>
 <div class="modal-body">
-    <ul class="list">
-		<li class="message {{message.class}}" ng-repeat='message in list'>
+    <ul class="list" mlsh='messageCount'>
+		<li class="message {{message.class}}" ng-repeat='message in messageList'>
 			<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender == self._id ? self.avatar : user.avatar}}!avatar">
 			<div class="content">
 				<span class='name'>{{message.sender == self._id ? self.nickname : user.nickname}}</span>

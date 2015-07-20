@@ -212,14 +212,7 @@ UserRoomActiveSchema.statics.addPrivateActive = function(req){
 			active.markModified('privateLastActive');
 			active.save();
 		}else{
-			var options = {
-				user:req.session.user._id,
-				roomLastActive:[],
-				privateLastActiveSchema:[]
-			}
-			options.privateLastActive.unshift({user:req.session.user._id});
-			var _active = new _this(options);
-			_active.save(errorHandle(req,type));	
+			req.socket.emit('system:private','user not find');
 		}
 	}));
 }

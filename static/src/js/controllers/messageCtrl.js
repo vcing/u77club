@@ -44,12 +44,16 @@ app.controller('messageListCtrl',['$scope','messageList','$stateParams','userSel
 		}
 	}]);
 
-app.controller('messagePrivateCtrl',['$scope','$modalInstance','user','list','messagePrivate','userSelf',
-	function($scope,$modalInstance,user,list,messagePrivate,userSelf){
+app.controller('messagePrivateCtrl',['$scope','$modalInstance','data','messagePrivate','userSelf',
+	function($scope,$modalInstance,data,messagePrivate,userSelf){
+		var user = data.user;
+		$scope.user = data.user;
+
 		var self = userSelf.self();
-		$scope.user = user;
-		$scope.list = classHandle(list);
 		$scope.self = self;
+		$scope.messageList = classHandle(data.list);
+		$scope.messageCount = data.list.length;
+		
 		$scope.cancel = function(){
 			messagePrivate.removeListener('messagePrivate')
 			$modalInstance.dismiss('cancel');
@@ -63,7 +67,8 @@ app.controller('messagePrivateCtrl',['$scope','$modalInstance','user','list','me
 		messagePrivate.addListener('messagePrivate',function(data){
 			if(data.receiver == self._id || data.sender == self._id){
 				messagePrivate.clearCount(user._id);
-				$scope.list = classHandle(messagePrivate.list(user._id));
+				$scope.messageList = classHandle(messagePrivate.list(user._id));
+				$scope.messageCount = messagePrivate.list(user._id).length;
 				messagePrivate.updateActive(user._id);
 			}
 		});

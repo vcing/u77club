@@ -290,7 +290,7 @@
 				-ms-flex-direction: column;
 				flex-direction: column;	
 
-				@media (max-width:991px){
+				@media (max-width:767px){
 					width: 200px;
 					height: 100%;
 					padding: 0;
@@ -1140,7 +1140,7 @@
 		-ms-transform: translate3d(0, 0, 0);
 		-o-transform: translate3d(0, 0, 0);
 		transform: translate3d(0, 0, 0);
-
+		height:400px;
 		@extend %messages;
 	}
 
@@ -1148,11 +1148,6 @@
 	.modal-footer{
 		padding:0;
 		border:none;
-	}
-
-	.modal-body{
-		height:400px;
-		overflow: auto;
 	}
 
 	.editor{

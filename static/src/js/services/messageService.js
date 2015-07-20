@@ -120,23 +120,20 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 		function openPrivateMessage(_id){
 			if(_record[_id])_record[_id].count = 0;
 			var messageList = getPrivateMessages(_id);
-				messageList.then(function(data){
-				var createPrivateModal = $modal.open({
-					animation:true,
-					backdrop:false,
-					templateUrl:'/message/private.html',
-					controller:'messagePrivateCtrl',
-					windowClass:'private-modal',
-					resolve:{
-						list:function(){
-							return data.list;
-						},
-						user:function(){
-							return data.user;
-						}
+				// messageList.then(function(data){
+			var createPrivateModal = $modal.open({
+				animation:true,
+				backdrop:false,
+				templateUrl:'/message/private.html',
+				controller:'messagePrivateCtrl',
+				windowClass:'private-modal',
+				resolve:{
+					data:function(){
+						return messageList;
 					}
-				});	
-			});
+				}
+			});	
+			// });
 			
 		}
 
@@ -151,16 +148,19 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 			// 添加私聊记录
 			if(_record[_id]){
 				_record[_id].count++;
+				angular.forEach(_cb,function(cb){
+					cb(data);
+				})
 			}else{
 				// 如果没有记录 则重新从服务器获取记录
 				userPrivateList.promise().then(function(result){
 					_record = result;
+					angular.forEach(_cb,function(cb){
+						cb(data);
+					})
 				});
 			}
-			angular.forEach(_cb,function(cb){
-				cb(data);
-			})
-		})
+		});
 
 		// 绑定到根作用域
 		$rootScope.openPrivateMessage = openPrivateMessage;

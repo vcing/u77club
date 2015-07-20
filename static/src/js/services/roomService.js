@@ -86,13 +86,38 @@ app.service('roomListByIds',['socket',function(socket){
 }]);
 
 
-app.service('roomList',['socket',function(socket){
+app.service('roomList',['socket','roomJoin','roomLeave',function(socket,roomJoin,roomLeave){
 	var _list = [];
 	var _cb = {};
+
 	socket.addListener('room:list',function(data){
+		events(data);
+	});
+
+	function events(data){
 		_list = data;
 		angular.forEach(_cb,function(cb){
 			cb(data);
+		});
+	}
+
+	roomJoin.addCommonListener('roomList',function(data){
+		angular.forEach(_list,function(room){
+			if(room._id == data._id){
+				room.users.unshift(data.user);
+				events(_list);
+			}
+		});
+	});
+
+	roomLeave.addCommonListener('roomList',function(data){
+		angular.forEach(_list,function(room){
+			if(room._id == data._id){
+				_.remove(room.users,function(user){
+					return user._id == data.user._id;
+				});
+				events(_list);
+			}
 		});
 	});
 
@@ -127,7 +152,13 @@ app.service('roomList',['socket',function(socket){
 
 app.service('roomJoin',['socket',function(socket){
 	var _cb = {};
+	var _commonCb = {};
 	socket.addListener('room:join',function(data){
+
+		angular.forEach(_commonCb,function(cb){
+			cb(data);
+		});
+
 		angular.forEach(_cb[data._id],function(cb){
 			cb(data.user);
 		});
@@ -151,6 +182,9 @@ app.service('roomJoin',['socket',function(socket){
 				return false;
 			}
 		},
+		addCommonListener:function(name,cb){
+			_commonCb[name] = cb;
+		},
 		on:function(name,_id,cb){
 			if(!_cb[_id])_cb[_id] = {};
 			_cb[_id][name] = function(data){
@@ -162,8 +196,13 @@ app.service('roomJoin',['socket',function(socket){
 }]);
 
 app.service('roomLeave',['socket',function(socket){
+	var _commonCb = {};
 	var _cb = {};
 	socket.addListener('room:leave',function(data){
+		angular.forEach(_commonCb,function(cb){
+			cb(data);
+		});
+
 		angular.forEach(_cb[data._id],function(cb){
 			cb(data.user);
 		});
@@ -186,6 +225,9 @@ app.service('roomLeave',['socket',function(socket){
 			}else{
 				return false;
 			}
+		},
+		addCommonListener:function(name,cb){
+			_commonCb[name] = cb;
 		},
 		on:function(name,_id,cb){
 			if(!_cb[_id])_cb[_id] = {};
