@@ -18,9 +18,37 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 		if(_record.then){
 			_record.then(function(record){
 				$scope.record = record;
+				setUnreadMessageCount(record);
 			});
 		}else{
 			$scope.record = _record;
+			setUnreadMessageCount(_record);
+		}
+
+		function setUnreadMessageCount(record){
+			var _count = 0;
+			angular.forEach(record,function(data,index){
+				_count += data.count;
+				if(_count > 99){
+					_count = '99+';
+					$scope.messageCount = _count;
+					return;
+				}
+			});
+			$scope.messageCount = _count;
+		}
+
+		function setRoomUnreadMessageCount(rooms){
+			var _count = 0;
+			angular.forEach(rooms,function(room){
+				_count += room.messageRemind;
+				if(_count > 99){
+					_count = '99+';
+					$scope.messageCount = _count;
+					return;
+				}
+			});
+			$scope.roomUnreadMessage = _count;
 		}
 
 		// 当前激活房间ID
@@ -28,10 +56,11 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 		$scope.openPrivateMessage = messagePrivate.openPrivateMessage;
 		messagePrivate.addListener(_name,function(){
 			$scope.record = messagePrivate.record();
+			setUnreadMessageCount($scope.record);
 		})
 		
 		
-
+		messagePrivate.setSideBarAction(setUnreadMessageCount);
 
 		// 给roominfo设置侧栏监听器 如果触发则更新侧栏信息
 		roomInfo.setSideBarAction(function(_id){
@@ -41,11 +70,13 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 					room.messageRemind = 0;
 				}
 			});
+			setRoomUnreadMessageCount($scope.rooms);
 		});
 		
 		if(!roomListByIds.checkListener(_name)){
 			roomListByIds.addListener(_name,function(rooms){
 				$scope.rooms = rooms;
+				setRoomUnreadMessageCount(rooms);
 			});
 		}
 
@@ -66,6 +97,7 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 						roomUpdateActive.emit({_id:room._id});
 					}
 				});
+				setRoomUnreadMessageCount($scope.rooms);
 			});
 		}
 

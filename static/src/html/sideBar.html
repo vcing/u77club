@@ -2,33 +2,8 @@
 	<a class="toggle" data-toggle='dropdown' ui-sref='main'>
 		<img class='avatar' ng-src='http://img.u77.com/avatar/{{user.avatar}}!avatar'>
 		<span class="nickname" ng-bind='user.nickname'></span>
-		<!-- <span class="username">@vcing</span> -->
 		<i class="fa fa-home"></i>
 	</a>
-<!-- 	<ul class='menu'>
-		<li>
-			<a data-toggle="modal" href="#lcb-profile">
-				<i class="fa fa-fw fa-edit"></i> 修改档案
-			</a>
-		</li>
-		<li>
-            <a data-toggle="modal" href="#lcb-account">
-                <i class="fa fa-fw fa-cogs"></i> 账号设置
-            </a>
-        </li>
-        <li>
-            <a data-toggle="modal" href="#lcb-notifications">
-                <i class="fa fa-fw fa-bell"></i> 通知
-            </a>
-        </li>
-        <li>
-            <a data-toggle="modal" href="#lcb-tokens">
-                <i class="fa fa-fw fa-lock"></i> 认证令牌 
-            </a>
-        </li>
-        <li class="divider"></li>
-        <li><a href="./logout"><i class="fa fa-fw fa-sign-out"></i> 登出</a></li>
-	</ul> -->
 </div>
 <div class="status">
 	<span class="disconnect"><i class="fa fa-plug"></i>离线</span>
@@ -36,15 +11,12 @@
 </div>
 <div class="tabs-wrap">
 	<ul class="tabs-menu"  ng-class="{'menu':'active'}[tab]">
-		<li class="tab home">
-			<a ng-click="tab='menu'" ui-sref='main'><i class="fa fa-home"></i></a>
-		</li>
 		<li class="tab menu" ng-class="{true:'active'}[currentRoomId != undefined]">
 			<a  ng-click="tab='room'">
 				<span class="title">房间</span>
 	            <span class="alert">
 	                <span class="mentions"></span>
-	                <span class="total"></span>
+	                <span class="total" ng-bind="roomUnreadMessage" ng-show="roomUnreadMessage != 0 && roomUnreadmessage != 'NaN'"></span>
 	            </span>
 			</a>
 		</li>
@@ -53,7 +25,7 @@
 				<span class="title">消息</span>
 	            <span class="alert">
 	                <span class="mentions"></span>
-	                <span class="total"></span>
+	                <span class="total" ng-bind="messageCount" ng-show="messageCount != 0 && messageCount != 'NaN'"></span>
 	            </span>
 			</a>
 		</li>
@@ -84,9 +56,6 @@
 	<ul class="tabs-friend" ng-class="{'friend':'active'}[tab]">
 		<li class="tab back">
 			<a ng-click="tab='menu'"><i class="fa fa-chevron-left"></i></a>
-		</li>
-		<li class="tab home">
-			<a><i class="fa fa-th"></i></a>
 		</li>
 		<li class="tab friend" ng-repeat="_record in record">
 			<a ng-click="openPrivateMessage(_record.user._id)">

@@ -21,7 +21,7 @@
 			</div>
 			<ul class="users">
 				<li class="user" ng-repeat='user in room.users'>
-					<img class='avatar' ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar" alt='{{user.nickname}}'  ng-click='openPrivateMessage(user._id)'>
+					<img class='avatar' ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar" alt='{{user.nickname}}' ng-click='openPrivateMessage(user._id)'>
 				</li>
 			</ul>
 			<div class="switch-wrap"  ng-if="room.type == 1">

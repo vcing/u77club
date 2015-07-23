@@ -14,8 +14,15 @@
 				</a>
 			</div>
 		</div>
-		<ul class="messages" message-list='messageList' message-count='messageCount'>
-			
+		<ul class="messages" mlsh>
+			<li class="message {{message.class}}" ng-repeat='message in messageList'>
+				<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar" ng-click='openPrivateMessage(message.sender._id)'>
+				<div class="content">
+					<span class='name' ng-click='openPrivateMessage(message.sender._id)'>{{message.sender.nickname}}</span>
+					<span class='time'>{{message.date | dateFromNow}}</span>
+					<div class="text" ng-bind-html="message.content | html"></div>
+				</div>
+			</li>
 		</ul>
 		<div input-area></div>
 	</div>
@@ -27,7 +34,7 @@
 				</h3>
 			</div>
 			<ul class="list">
-				<li class="item user" ng-repeat='user in onlineList'>
+				<li class="item user" ng-repeat='user in onlineList' ng-click='openPrivateMessage(user._id)'>
 			        <img class="avatar" ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar">
 			        <div class="info">
 			            <span class="nickname" ng-bind='user.nickname'></span>

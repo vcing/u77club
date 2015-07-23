@@ -29,22 +29,41 @@ function message(){
 					_id:msg._id
 				});
 			}));
-			models.room.findById(req.param('_id'),errorHandle(req,type,function(room){
-				if(!room){
-					req.socket.emit('system:'+type,'请先选择房间');
-					return false;
-				}
-				if(room.messages){
-					room.messages.push(msg._id);
-				}else{
-					room.messages = [msg._id];
-				}
-				room.save(errorHandle(req,type));
-			}));
+			// models.room.findById(req.param('_id'),errorHandle(req,type,function(room){
+			// 	if(!room){
+			// 		req.socket.emit('system:'+type,'请先选择房间');
+			// 		return false;
+			// 	}
+			// 	if(room.messages){
+			// 		room.messages.push(msg._id);
+			// 	}else{
+			// 		room.messages = [msg._id];
+			// 	}
+			// 	room.save(errorHandle(req,type));
+			// }));
 		},
 		list:function(req,res){
-			models.message.findByRoom(req.param('_id'),errorHandle(req,type,function(messages){
-				req.socket.emit(type+':list',{_id:req.param('_id'),messages:messages});
+			var type = 'room message list';
+			var options = {
+				room:req.param('_id')
+			}
+
+			if(req.param('date')){
+				var date = new Date(req.param('date'));
+				options["date"] = {"$lt":date};
+			}
+
+			models.message.find(options)
+			.sort('-date')
+			.limit(20)
+			.populate('sender')
+			.exec(errorHandle(req,type,function(messages){
+				var data = {
+					_id:req.param('_id'),
+					messages:messages.reverse()
+				}
+				if(req.param('date'))data.isPrev = true;
+				req.socket.emit('message:list',data);
 			}));
 		},
 		private:function(req,res){
@@ -75,8 +94,7 @@ function message(){
 			var type = 'private message list';
 			models.user.findById(req.param('_id')).exec(errorHandle(req,type,function(user){
 				if(user){
-					models.userRoomActive.addPrivateActive(req);
-					models.userMessage.find({"$or":[
+					var options = {"$or":[
 						{
 							sender:req.session.user._id,
 							receiver:user._id
@@ -84,10 +102,20 @@ function message(){
 						{
 							sender:user._id,
 							receiver:req.session.user._id
-						}]})
-					.sort("date")
+						}]};
+
+					if(req.param('date')){
+						var date = new Date(req.param('date'));
+						options["date"] = {"$lt":date};
+					}
+					models.userRoomActive.addPrivateActive(req);
+					models.userMessage.find(options)
+					.sort("-date")
+					.limit(20)
 					.exec(errorHandle(req,type,function(messages){
-						req.socket.emit('message:listPrivate',{user:user,list:messages});
+						result = {user:user,list:messages.reverse()};
+						if(req.param('date'))result.isPrev = true;
+						req.socket.emit('message:listPrivate',result);
 					}));
 				}else{
 					req.socket.emit('message:listPrivate',{status:101,msg:'user not find'});	

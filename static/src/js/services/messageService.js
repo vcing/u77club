@@ -36,14 +36,19 @@ app.service('messageNew',['socket','messageList',function(socket,messageList){
 }]);
 
 app.service('messageList',['socket',function(socket){
-	var _cb = {};
-	var _list = {};
+	var _cb      = {};
+	var _list    = {};
+	var _loading = {};
 	socket.addListener('message:list',function(data){
 		events(data);
 	});
 
 	function events(data) {
-		if(data.messages){
+		if(data.isPrev){
+			_list[data._id] = data.messages.concat(_list[data._id]);
+			_loading[data._id] = false;
+			if(data.messages.length == 0)_loading[data._id] = true;
+		}else if(data.messages && !data.isPrev){
 			_list[data._id] = data.messages;	
 		}
 		angular.forEach(_cb[data._id],function(cb){
@@ -75,6 +80,13 @@ app.service('messageList',['socket',function(socket){
 				cb(data.messages);
 			}
 		},
+		prev:function(_id){
+			var date = _list[_id][0].date;
+			if(!_loading[_id]){
+				socket.emit('message:list',{_id:_id,date:date});
+				_loading[_id] = true;	
+			}
+		},
 		list:function(_id){
 			return _list[_id];
 		},
@@ -103,24 +115,28 @@ app.service('messageRemind',['socket','$q',
 app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','userPrivateList',
 	function(socket,$rootScope,$q,$modal,userSelf,userPrivateList){
 
-		var _cb = {};		//存回调函数的
-		var _list = {};		//存消息列表的
-		var _record = {};	//存导航栏显示未读数目的
+		var _cb      = {};		//存回调函数的
+		var _list    = {};		//存消息列表的
+		var _record  = {};		//存导航栏显示未读数目的
+		var sideBarAction;		//保存侧栏信息条数更新后的函数
+		var _currentId;			//当前私聊对象ID
+		var _loading = {};		//保存请求状态
 
 		function getPrivateMessages(_id){
 			var deffered = $q.defer();
 			socket.emit('message:listPrivate',{_id:_id});
-			socket.on('message:listPrivate',function(data){
-				_list[_id] = data.list;
+			_cb['getPrivateMessages'] = function(data){
 				deffered.resolve(data);
-			});
+				delete _cb['getPrivateMessages'];
+			}
 			return deffered.promise;
 		}
 
 		function openPrivateMessage(_id){
+			_currentId = _id;
 			if(_record[_id])_record[_id].count = 0;
-			var messageList = getPrivateMessages(_id);
-				// messageList.then(function(data){
+			sideBarAction(_record);
+			// var messageList = getPrivateMessages(_id);
 			var createPrivateModal = $modal.open({
 				animation:true,
 				backdrop:false,
@@ -129,13 +145,34 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 				windowClass:'private-modal',
 				resolve:{
 					data:function(){
-						return messageList;
+						return {
+							getPrivateMessages:getPrivateMessages,
+							_id:_id
+						}
 					}
 				}
-			});	
+			});
+			createPrivateModal.result.then(function(){
+				_currentId = 0;
+			},function(){
+				_currentId = 0;
+			})
 			// });
-			
 		}
+
+		socket.addListener('message:listPrivate',function(data){
+			if(data.isPrev){
+				_list[data.user._id] = data.list.concat(_list[data.user._id]);
+				_loading[data.user._id] = false;
+				if(data.list.length == 0)_loading[data.user._id] = true;
+			}else{
+				_list[data.user._id] = data.list;
+			}
+			angular.forEach(_cb,function(cb){
+				cb(data);
+			});
+			
+		});
 
 		socket.addListener('message:private',function(data){
 			var _id = data.sender == userSelf.self()._id ? data.receiver : data.sender;
@@ -147,7 +184,7 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 			}
 			// 添加私聊记录
 			if(_record[_id]){
-				_record[_id].count++;
+				if(_id != _currentId)_record[_id].count++;
 				angular.forEach(_cb,function(cb){
 					cb(data);
 				})
@@ -155,6 +192,7 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 				// 如果没有记录 则重新从服务器获取记录
 				userPrivateList.promise().then(function(result){
 					_record = result;
+					_record[_id] = 0;
 					angular.forEach(_cb,function(cb){
 						cb(data);
 					})
@@ -169,11 +207,9 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 		function isEmptyObject(obj){
 		    for(var n in obj){return false} 
 		    return true; 
-		} 
-
+		}
 
 		return {
-			
 			emit:function(options){
 				socket.emit('message:private',options);
 			},
@@ -207,8 +243,18 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 				});
 				return deffered.promise;
 			},
+			prev:function(_id){
+				var date = _list[_id][0].date;
+				if(!_loading[_id]){
+					socket.emit('message:listPrivate',{_id,_id,date:date});	
+					_loading[_id] = true;
+				}
+			},
 			updateActive:function(_id){
 				socket.emit('message:updateActive',{_id:_id});
+			},
+			setSideBarAction:function(fn){
+				sideBarAction = fn;
 			},
 			openPrivateMessage:openPrivateMessage,
 		}

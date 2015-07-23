@@ -24,10 +24,10 @@ var RoomSchema = new mongoose.Schema({
 		type: ObjectId,
 		ref: 'User'
 	}],
-	messages: [{
-		type: ObjectId,
-		ref: 'Message'
-	}],
+	// messages: [{
+	// 	type: ObjectId,
+	// 	ref: 'Message'
+	// }],
     created: {
         type: Date,
         default: Date.now

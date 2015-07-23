@@ -12,8 +12,6 @@ app.service('socket',['socketFactory',function(socketFactory){
 app.config(['$stateProvider','$urlRouterProvider',
 	function($stateProvider,$urlRouterProvider){
 
-		
-
 		// 路由
 		
 		$stateProvider
@@ -55,6 +53,9 @@ app.config(['$stateProvider','$urlRouterProvider',
 			})
 		$urlRouterProvider.when("", "/");
 		$urlRouterProvider.otherwise('/');
+
+		// 时间本地化
+		moment.locale('zh-cn');
 	}]);
 
 

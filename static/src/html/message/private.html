@@ -3,12 +3,12 @@
     <h4 class="modal-title" ng-bind='user.nickname'></h4>
 </div>
 <div class="modal-body">
-    <ul class="list" mlsh='messageCount'>
+    <ul class="list" mlsh>
 		<li class="message {{message.class}}" ng-repeat='message in messageList'>
 			<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender == self._id ? self.avatar : user.avatar}}!avatar">
 			<div class="content">
 				<span class='name'>{{message.sender == self._id ? self.nickname : user.nickname}}</span>
-						<span class='time'>{{message.date}}</span>
+						<span class='time'>{{message.date | dateFromNow }}</span>
 				<div class="text">{{message.text}}</div>
 			</div>
 		</li>

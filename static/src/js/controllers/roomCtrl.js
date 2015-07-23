@@ -242,8 +242,56 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 
 
 		$scope.send = function(){
-			messageNew.emit({_id:roomId,content:$scope.text})
-			$scope.text = '';
+			// 处理回车
+			$scope.text = $scope.text.replace(/\n/g,'<br>');
+			if($scope.text == ''){
+				alert('请输入内容');
+			}else{
+				messageNew.emit({_id:roomId,content:$scope.text})
+				$scope.text = '';	
+			}
+		}
+
+
+		// message list controller
+		var __name = 'roomMessageList';
+		$scope.messageCount = 0;
+		// messages
+		if(messageList.checkListener(__name,roomId)){
+			$scope.messageCount = messageList.list(roomId).length; 
+			$scope.messageList = classHandle(messageList.list(roomId));
+		}else{
+			messageList.addListener(__name,roomId,function(list){
+				$scope.messageCount = list.length;
+				$scope.messageList = classHandle(list);
+				// });
+			});
+		}
+		$scope.messageList = classHandle($scope.messageList);
+
+		// dom元素class处理
+		function classHandle(list){
+			angular.forEach(list,function(message,index){
+				message.class = '';
+				// 如果上条消息也是该用户发表的
+				// 则显示为碎片模式
+				var thisMsgDate = moment(list[index].date);
+				var prevMsgDate = index > 1 ? moment(list[index-1].date) : 0;
+				if(index > 0 && list[index].sender._id == list[index-1].sender._id && thisMsgDate.diff(prevMsgDate,'minutes') < 5){
+					message.class += ' fragment';
+				}
+
+				// 我发的
+				if(message.sender._id == _self._id){
+					message.class += ' own';
+				}
+			});
+
+			return list;
+		}
+
+		$scope.loadMore = function(){
+			messageList.prev(roomId);
 		}
 	}]);
 
