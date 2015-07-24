@@ -126,6 +126,7 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 			var deffered = $q.defer();
 			socket.emit('message:listPrivate',{_id:_id});
 			_cb['getPrivateMessages'] = function(data){
+				_loading[data.user._id] = false;
 				deffered.resolve(data);
 				delete _cb['getPrivateMessages'];
 			}
@@ -246,7 +247,7 @@ app.service('messagePrivate',['socket','$rootScope','$q','$modal','userSelf','us
 			prev:function(_id){
 				var date = _list[_id][0].date;
 				if(!_loading[_id]){
-					socket.emit('message:listPrivate',{_id,_id,date:date});	
+					socket.emit('message:listPrivate',{_id:_id,date:date});	
 					_loading[_id] = true;
 				}
 			},

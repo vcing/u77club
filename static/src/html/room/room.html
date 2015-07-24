@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<ul class="messages" mlsh>
-			<li class="message {{message.class}}" ng-repeat='message in messageList'>
+			<li id="m_{{message._id}}" class="message {{message.class}}" ng-repeat='message in messageList'>
 				<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar" ng-click='openPrivateMessage(message.sender._id)'>
 				<div class="content">
 					<span class='name' ng-click='openPrivateMessage(message.sender._id)'>{{message.sender.nickname}}</span>

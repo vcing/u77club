@@ -59,8 +59,9 @@ app.config(['$stateProvider','$urlRouterProvider',
 	}]);
 
 
-app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','roomInfo','messagePrivate',
-	function(socket,userSelf,$rootScope,$urlRouter,$state,$stateParams,roomInfo,messagePrivate){
+app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','roomInfo','messagePrivate','$location','$anchorScroll',
+	function(socket,userSelf,$rootScope,$urlRouter,$state,$stateParams,roomInfo,messagePrivate,$location,$anchorScroll){
+		// 根作用于绑定 路由状态
 		$rootScope.$state = $state;
 		$rootScope.$stateParams = $stateParams;
 		$rootScope.$on('$locationChangeSuccess',function(evt){
@@ -75,4 +76,11 @@ app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','
 
 		// 初始化侧栏
 		$rootScope.sideBarToggle = false;
+
+		// 绑定锚点跳转函数
+		$rootScope.scrollTo = function(hash){
+			console.log(hash);
+			$location.hash(hash);
+			$anchorScroll();
+		}
 	}]);

@@ -40,8 +40,6 @@ app.controller('messagePrivateCtrl',['$scope','$modalInstance','data','messagePr
 			messagePrivate.prev(user._id);
 		}
 
-		
-
 		function classHandle(list){
 			angular.forEach(list,function(message,index){
 				message.class = '';
