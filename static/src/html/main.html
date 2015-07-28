@@ -8,7 +8,7 @@
 <div id="sidebar" side-bar>
 
 </div>
-<div class='main' ui-view='content' >
+<div class='main' ui-view='content'  ng-click='$rootScope.sideBarToggle = false'>
 	<div class="wrap">
 		<h2 style="display:block;margin:0 auto">这里是首页 虽然这里啥都还没有</h2>
 		<h2 style="display:block;margin:0 auto">点击<a ui-sref="main.rooms">这里</a>进入房间列表</h2>

@@ -26,6 +26,7 @@ function user(){
 		var user = models.user.find(req.body,function(err,doc){
 			if(doc.length == 1){
 				req.session.user = doc[0];
+				req.session.save();
 				res.redirect('/index.html');
 			}else{
 				res.send('wrong.');
