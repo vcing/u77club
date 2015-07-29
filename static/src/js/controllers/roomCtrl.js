@@ -158,6 +158,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		var _self  = userSelf.self();
 		var _name  = 'roomCtrl';
 		var roomId = $stateParams.roomId;
+		$scope.active = 'actives';
 
 		if(!_self){
 			userSelf.emit();
@@ -290,6 +291,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 			return list;
 		}
 
+		// 给滚动指令用的
 		$scope.loadMore = function(){
 			messageList.prev(roomId);
 		}

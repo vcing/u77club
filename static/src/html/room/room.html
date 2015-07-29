@@ -26,21 +26,53 @@
 		</ul>
 		<div input-area></div>
 	</div>
-	<div class="sidebar">
-		<div class="group users">
-			<div class="header">
-				<h3>
-					<i class="fa fa-users"></i>在线(<span class='online-count' ng-bind='onlineCount'></span>)
-				</h3>
-			</div>
-			<ul class="list">
-				<li class="item user" ng-repeat='user in onlineList' ng-click='openPrivateMessage(user._id)'>
-			        <img class="avatar" ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar">
-			        <div class="info">
-			            <span class="nickname" ng-bind='user.nickname'></span>
-			        </div>
-			    </li>
+	<div class="sidebar" sidebar-handle>
+		<div class="header">
+			<ul>
+				<li class="actives"  ng-class="{'actives':'active'}[active]" ng-click="active='actives'">
+					<h3>动态</h3>
+				</li>
+				<li class='users' ng-class="{'users':'active'}[active]" ng-click="active='users'">
+					<h3>
+						<i class="fa fa-users"></i>在线(<span class='online-count' ng-bind='onlineCount'></span>)
+					</h3>
+				</li>
 			</ul>
+			
+		</div>
+		<div class="wraper">
+			<div class="group actives">
+				<div class="block">
+					<div class="top">
+						<div class='avatar'><img width="50" height="50" src="http://img.u77.com/avatar/u77_avatar.jpg!avatar"></div>
+						
+						<div class="detail">
+							<div class="author">
+								<a class="nickname">TYTYTY</a>
+								<a class="title">V</a>
+							</div>
+							<div class="content">测试动态测试动态测试动态测试动态测试动态测试动态<img src='http://img.u77.com/g/2015/04/582a0d03755c69b6.jpg'></div>
+						</div>
+						
+					</div>
+					<div class="bottom">
+						<a >收藏</a>
+						<a >转发</a>
+						<a >评论</a>
+						<a >点赞</a>
+					</div>
+				</div>
+			</div>
+			<div class="group users">
+				<ul class="list">
+					<li class="item user" ng-repeat='user in onlineList' ng-click='openPrivateMessage(user._id)'>
+				        <img class="avatar" ng-src="http://img.u77.com/avatar/{{user.avatar}}!avatar">
+				        <div class="info">
+				            <span class="nickname" ng-bind='user.nickname'></span>
+				        </div>
+				    </li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>
