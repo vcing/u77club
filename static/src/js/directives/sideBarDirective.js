@@ -29,7 +29,7 @@ app.directive('sidebarHandle',function(){
 		}
 
 		$scope.$watch('roomSidebarToggle',function(n,o){
-			fit();
+			setTimeout(fit,10);
 		});
 
 		$scope.$watch('active',function(n,o){

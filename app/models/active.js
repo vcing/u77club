@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
-var MessageSchema = new mongoose.Schema({
+var ActiveSchema = new mongoose.Schema({
     room: {
         type: ObjectId,
         ref: 'Room',
@@ -19,26 +19,23 @@ var MessageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    original: {
+    	type: ObjectId,
+    	ref: 'Active'
+    },
     date: {
         type: Date,
         default: Date.now,
         index: true
-    },
-    active: {
-        type: ObjectId,
-        ref: 'Active'
     }
 });
 
-/**
- * 20150619
- * 根据room._id 获取消息列表
- * @param  {int}   id 房间的_id
- * @param  {Function} cb 回调函数
- * @return {null}
- */
-MessageSchema.statics.findByRoom = function(id,cb){
-    this.find({room:id}).populate('sender').sort('date').exec(cb);
+ActiveSchema.statics.findByRoom = function(_id){
+    return this.find({room:_id}).sort('-date').exec();
 }
 
-module.exports = mongoose.model('Message', MessageSchema);
+ActiveSchema.statics.findBySender = function(_id){
+    return this.find({sender:_id}).sort('-date').exec();
+}
+
+module.exports = mongoose.model('Active', ActiveSchema);

@@ -153,8 +153,8 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid',
-	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid){
+app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal',
+	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal){
 		var _self  = userSelf.self();
 		var _name  = 'roomCtrl';
 		var roomId = $stateParams.roomId;
@@ -251,6 +251,14 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 				messageNew.emit({_id:roomId,content:$scope.text})
 				$scope.text = '';	
 			}
+		}
+
+		$scope.showNewActive = function(){
+			var newActiveModal = $modal.open({
+				animation:true,
+				templateUrl:'/active/new.html',
+				controller:'activeNewCtrl'
+			})
 		}
 
 
