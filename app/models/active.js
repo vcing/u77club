@@ -23,6 +23,10 @@ var ActiveSchema = new mongoose.Schema({
     	type: ObjectId,
     	ref: 'Active'
     },
+    type: {
+        type: Number,
+        default: 1
+    },
     date: {
         type: Date,
         default: Date.now,

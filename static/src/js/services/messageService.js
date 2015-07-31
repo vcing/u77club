@@ -1,4 +1,4 @@
-app.service('messageNew',['socket','messageList',function(socket,messageList){
+app.service('messageNew',['socket','messageList','activeList','activeInfo',function(socket,messageList,activeList){
 	var _cb = {};
 
 	
@@ -8,6 +8,10 @@ app.service('messageNew',['socket','messageList',function(socket,messageList){
 		if(_list){
 			_list.push(data);
 			messageList.setList(data.room,_list);
+		}
+
+		if(data.active){			
+			activeList.emit({roomId:data.room});
 		}
 		
 		angular.forEach(_cb,function(cb){

@@ -31,7 +31,7 @@ function active(){
 				}
 				var msg = new models.message(_options);
 				msg.save(errorHandle(req,type,function(){
-					app.io.to(req.param('_id')).emit(type+':new',{
+					app.io.to(req.param('_id')).emit('message:new',{
 						sender:req.session.user,
 						room:msg.room,
 						date:msg.date,

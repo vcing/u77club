@@ -1,1 +1,11 @@
-new active form
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">×</button>
+	<h4 class='modal-title'>发布动态</h4>
+</div>
+<div class="modal-body">
+	<textarea class='form-control' ng-model='content' style="resize:none;min-height:300px"></textarea>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+	<button type="submit" class="btn btn-primary submit" ng-click="submit()" ng-disabled="content == ''" disabled="disabled">确定</button>
+</div>

@@ -153,8 +153,8 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal',
-	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal){
+app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal','activeNew',
+	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal,activeNew){
 		var _self  = userSelf.self();
 		var _name  = 'roomCtrl';
 		var roomId = $stateParams.roomId;
@@ -258,7 +258,15 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 				animation:true,
 				templateUrl:'/active/new.html',
 				controller:'activeNewCtrl'
-			})
+			});
+
+			newActiveModal.result.then(function(content){
+				var options = {
+					_id:roomId,
+					content:content
+				}
+				activeNew.emit(options);
+			});
 		}
 
 
