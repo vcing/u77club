@@ -39,7 +39,7 @@ App = (function() {
     if ((_ref = this.$el) != null) {
       _ref.remove();
     }
-    return $(doc.body).append(this.$el = $("<div class='atwho-container'></div>"));
+    return $($('.main[ui-view="content"]')).append(this.$el = $("<div class='atwho-container'></div>"));
   };
 
   App.prototype.setupRootElement = function(iframe, asRoot) {

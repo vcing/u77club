@@ -153,8 +153,8 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 	}
 }]);
 
-app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal','activeNew',
-	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal,activeNew){
+app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal','activeNew','activeList','activeInfo',
+	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal,activeNew,activeList,activeInfo){
 		var _self  = userSelf.self();
 		var _name  = 'roomCtrl';
 		var roomId = $stateParams.roomId;
@@ -198,6 +198,13 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 			$scope.room = room;
 			if(!messageList.list(roomId))messageList.emit({_id:roomId});
 			if(!roomUserList.list(roomId))roomUserList.emit({_id:roomId});
+
+			// 动态处理
+			if(activeList.getActives(roomId)){
+				$scope.activeList = activeList.getActives(roomId);
+			}else{
+				activeList.emit({roomId:roomId});
+			}
 		}
 
 
@@ -241,6 +248,13 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 			$scope.onlineCount--;
 		});
 
+		// 动态事件绑定
+		activeList.addListener(_name,function(data){
+			if(data._id == roomId){
+				$scope.activeList = data.actives;
+			}
+		});
+
 
 		$scope.send = function(){
 			// 处理回车
@@ -251,6 +265,16 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 				messageNew.emit({_id:roomId,content:$scope.text})
 				$scope.text = '';	
 			}
+		}
+
+		$scope.sendComment = function(_id,content){
+			activeInfo.sendComment(_id,content);
+		}
+
+		$scope.getComment = function(active){
+			activeInfo.getComment(active._id).then(function(messages){
+				active.comments = messages;
+			});
 		}
 
 		$scope.showNewActive = function(){

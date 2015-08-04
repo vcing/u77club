@@ -54,7 +54,9 @@ function active(){
 			}
 		},
 		info:function(req,res){
-
+			models.active.findById(req.param('_id'),function(active){
+				req.socket.emit(type+':info',active);
+			});
 		},
 		support:function(req,res){
 
@@ -66,7 +68,37 @@ function active(){
 
 		},
 		comment:function(req,res){
-
+			if(req.param('content')){
+				// 如果有内容则为发评论
+				models.active.findById(req.param('_id')).exec(errorHandle(req,type,function(active){
+					console.log(active);
+					if(!active){
+						return false;
+					}
+					var options = {
+						room:active.room,
+						active:req.param('_id'),
+						sender:req.session.user._id,
+						content:req.param('content')
+					}
+					var msg = new models.message(options);
+					msg.save(errorHandle(req,type,function(){
+						app.io.to(active.room).emit('message:new',{
+							sender:req.session.user,
+							room:msg.room,
+							date:msg.date,
+							content:msg.content,
+							_id:msg._id,
+							active:active
+						});
+					}));	
+				}));
+			}else{
+				// 否则为获取评论
+				models.message.findByActive(req.param('_id'),errorHandle(req,type,function(messages){
+					req.socket.emit('active:comment',messages);
+				}));
+			}
 		}
 	});
 }

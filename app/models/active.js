@@ -35,11 +35,11 @@ var ActiveSchema = new mongoose.Schema({
 });
 
 ActiveSchema.statics.findByRoom = function(_id){
-    return this.find({room:_id}).sort('-date').exec();
+    return this.find({room:_id}).populate('sender').sort('-date').exec();
 }
 
 ActiveSchema.statics.findBySender = function(_id){
-    return this.find({sender:_id}).sort('-date').exec();
+    return this.find({sender:_id}).populate('sender').sort('-date').exec();
 }
 
 module.exports = mongoose.model('Active', ActiveSchema);

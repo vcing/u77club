@@ -33,7 +33,7 @@ app.service('activeList',['socket',
 			deleteListener:function(name){
 				delete _cb[name];
 			},
-			actives:function(_id){
+			getActives:function(_id){
 				if(_list[_id]){
 					return _list[_id]
 				}else{
@@ -49,7 +49,27 @@ app.service('activeList',['socket',
 		}
 	}]);
 
-app.service('activeInfo',['socket','activeList',
-	function(socket){
-
+app.service('activeInfo',['socket','$q',
+	function(socket,$q){
+		return {
+			promise:function(_id){
+				var deffered = $q.defer();
+				socket.emit('active:info',{_id:_id});
+				socket.on('active:info',function(data){
+					deffered.resolve(data);
+				});
+				return deffered.promise;
+			},
+			getComment:function(_id){
+				var deffered = $q.defer();
+				socket.emit('active:comment',{_id:_id});
+				socket.on('active:comment',function(data){
+					deffered.resolve(data);
+				});
+				return deffered.promise;
+			},
+			sendComment:function(_id,content){
+				socket.emit('active:comment',{_id:_id,content:content});
+			}
+		}
 	}]);

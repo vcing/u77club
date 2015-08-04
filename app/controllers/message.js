@@ -29,18 +29,6 @@ function message(){
 					_id:msg._id
 				});
 			}));
-			// models.room.findById(req.param('_id'),errorHandle(req,type,function(room){
-			// 	if(!room){
-			// 		req.socket.emit('system:'+type,'请先选择房间');
-			// 		return false;
-			// 	}
-			// 	if(room.messages){
-			// 		room.messages.push(msg._id);
-			// 	}else{
-			// 		room.messages = [msg._id];
-			// 	}
-			// 	room.save(errorHandle(req,type));
-			// }));
 		},
 		list:function(req,res){
 			var type = 'room message list';

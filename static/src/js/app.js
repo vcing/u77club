@@ -51,6 +51,15 @@ app.config(['$stateProvider','$urlRouterProvider',
 					}
 				}
 			})
+			.state('main.active',{
+				url:'active/:activeId',
+				views:{
+					'content':{
+						templateUrl:'active/info.html',
+						controller:'activeInfoCtrl'
+					}
+				}
+			})
 		$urlRouterProvider.when("", "/");
 		$urlRouterProvider.otherwise('/');
 

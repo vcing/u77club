@@ -15,3 +15,12 @@ app.controller('activeListCtrl',['$scope',
 	function($scope){
 
 	}]);
+
+app.controller('activeInfoCtrl',['$scope','activeInfo','$state','$stateParams',
+	function($scope,activeInfo,$state,$stateParams){
+		var _id = $stateParams.activeId;
+		activeInfo.promise(_id).then(function(data){
+			console.log(data);
+			$scope.active = data;
+		});
+	}]);
