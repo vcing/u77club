@@ -12,9 +12,27 @@
 }
 
 %active-block{
+
+	.new-active-tips{
+		margin: -17px 0 10px;
+		padding: 7px 0 0;
+		background: #fff8bf;
+		box-shadow: 0 0 2px rgba(0,0,0,0.2);
+		border-radius: 2px;
+		font-size: 12px;
+
+		a{
+			display: block;
+			height: 30px;
+			line-height: 30px;
+			text-align: center;
+			color: #eb7350;
+			cursor: pointer;
+		}	
+	}
+
 	.block{
 		background:#fff;
-		width: 100%;
 		border:1px solid #ddd;
 		margin-bottom: 10px;
 		overflow: hidden;
@@ -26,7 +44,8 @@
 			padding: 10px;
 
 			.avatar{
-				float:left;								
+				float:left;
+				display: block;				
 
 				img{
 					border-radius:25px;	
@@ -51,10 +70,16 @@
 					line-height: 23px;
 					word-wrap: break-word;
 					font-size:14px;
+					margin: 0;
 
 					img{
 						max-width: 100%;
 					}
+				}
+
+				.time{
+					font-size: 12px;
+					color: #808080;
 				}
 			}
 
@@ -111,6 +136,8 @@
 				overflow-y: hidden;
 				border-top: 1px solid #d9d9d9;
 				margin-top: 20px;
+				list-style: none;
+				padding: 0;
 
 				li{
 					margin: 0 0 -1px;
@@ -120,6 +147,7 @@
 
 				.avatar{
 					float: left;
+					display: block;
 
 					img{
 						margin-top: 6px;
@@ -133,27 +161,38 @@
 					line-height: 23px;
 					color: #333;
 
+					.content{
+						margin: 0;
+					}
+
 					.author{
 						color: #eb7350
 					}
 
-					.info .buttons{
-						float: right;
-						margin-top: 3px;
+					.info {
+						.buttons{
+							float: right;
+							margin-top: 3px;
 
-						a{
-							float: left;
-							display: block;
-							margin: 2px 0;
-							padding: 0 10px;
-							border-right-width: 1px;
-							border-right-style: solid;
-							border-right-color: #d9d9d9;
-							line-height: 12px;
+							a{
+								float: left;
+								display: block;
+								margin: 2px 0;
+								padding: 0 10px;
+								border-right-width: 1px;
+								border-right-style: solid;
+								border-right-color: #d9d9d9;
+								line-height: 12px;
+							}
+
+							a:last-child{
+								border:none;
+							}
 						}
 
-						a:last-child{
-							border:none;
+						.time{
+							font-size: 12px;
+							color: #808080;
 						}
 					}
 				}
@@ -203,6 +242,8 @@
 				word-wrap: break-word;
 			}
 		}
+
+		@extend %active-block;
 	}
 
 	.message.fragment{

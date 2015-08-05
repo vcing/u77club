@@ -1,7 +1,6 @@
 app.service('messageNew',['socket','messageList','activeList','activeInfo',function(socket,messageList,activeList){
 	var _cb = {};
-
-	
+	var newActiveListener = [];
 
 	socket.addListener('message:new',function(data){
 		var _list = messageList.list(data.room);
@@ -10,8 +9,10 @@ app.service('messageNew',['socket','messageList','activeList','activeInfo',funct
 			messageList.setList(data.room,_list);
 		}
 
-		if(data.active){			
-			activeList.emit({roomId:data.room});
+		if(data.active && data.content == ''){
+			angular.forEach(newActiveListener,function(fn){
+				fn();
+			});
 		}
 		
 		angular.forEach(_cb,function(cb){
@@ -36,6 +37,9 @@ app.service('messageNew',['socket','messageList','activeList','activeInfo',funct
 				return false;
 			}
 		},
+		setNewActiveListener:function(fn){
+			newActiveListener.push(fn);
+		}
 	}
 }]);
 

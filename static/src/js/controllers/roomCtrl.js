@@ -159,6 +159,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		var _name  = 'roomCtrl';
 		var roomId = $stateParams.roomId;
 		$scope.active = 'actives';
+		$scope.newActiveCount = 0;
 
 		if(!_self){
 			userSelf.emit();
@@ -255,6 +256,15 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 			}
 		});
 
+		messageNew.setNewActiveListener(function(){
+			$scope.newActiveCount++;
+		});
+
+		$scope.refreshActives = function(){
+			$scope.newActiveCount = 0;
+			activeList.emit({roomId:roomId});
+		}
+
 
 		$scope.send = function(){
 			// 处理回车
@@ -272,6 +282,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		}
 
 		$scope.getComment = function(active){
+			console.log(active);
 			activeInfo.getComment(active._id).then(function(messages){
 				active.comments = messages;
 			});

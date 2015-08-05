@@ -1,15 +1,20 @@
+<div class="new-active-tips" ng-show="newActiveCount != 0">
+	<a ng-click="refreshActives()">有{{newActiveCount}}条新动态，点击查看</a>
+</div>
+
+
+
 <div class="block" ng-repeat="active in activeList">
 	<div class="top">
 		<div class='avatar'><img width="50" height="50" ng-src="http://img.u77.com/avatar/{{active.sender.avatar}}!avatar"></div>
-		
 		<div class="detail">
 			<div class="author">
 				<a class="nickname" ng-bind="active.sender.nickname"></a>
 				<a class="title"></a>
 			</div>
 			<div class="content" ng-bind="active.content"></div>
+			<span class="time" ng-bind="active.date|dateFromNow"></span>
 		</div>
-		
 	</div>
 	<div class="bottom">
 		<a >收藏</a>

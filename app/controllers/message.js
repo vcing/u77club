@@ -45,6 +45,7 @@ function message(){
 			.sort('-date')
 			.limit(20)
 			.populate('sender')
+			.populate('active')
 			.exec(errorHandle(req,type,function(messages){
 				var data = {
 					_id:req.param('_id'),

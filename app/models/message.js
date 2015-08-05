@@ -41,7 +41,7 @@ MessageSchema.statics.findByRoom = function(id,cb){
 }
 
 MessageSchema.statics.findByActive = function(_id,cb){
-    this.find({active:_id}).populate('sender').sort('-date').exec(cb);
+    this.find({active:_id,content:{$ne:''}}).populate('sender').sort('-date').exec(cb);
 }
 
 module.exports = mongoose.model('Message', MessageSchema);
