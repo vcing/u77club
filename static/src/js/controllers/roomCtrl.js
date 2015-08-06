@@ -155,11 +155,12 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 
 app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal','activeNew','activeList','activeInfo',
 	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal,activeNew,activeList,activeInfo){
-		var _self  = userSelf.self();
-		var _name  = 'roomCtrl';
-		var roomId = $stateParams.roomId;
-		$scope.active = 'actives';
+		var _self             = userSelf.self();
+		var _name             = 'roomCtrl';
+		var roomId            = $stateParams.roomId;
+		$scope.active         = 'actives';
 		$scope.newActiveCount = 0;
+		$scope.self           = _self;
 
 		if(!_self){
 			userSelf.emit();
@@ -211,6 +212,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 
 		userSelf.addListener(_name,function(user){
 			_self = user;
+			$scope.self = user;
 		});
 		
 		// online list
@@ -277,12 +279,17 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 			}
 		}
 
-		$scope.sendComment = function(_id,content){
-			activeInfo.sendComment(_id,content);
+		$scope.sendComment = function(active,content){
+			activeInfo.sendComment(active._id,content);
+			active.comments.unshift({
+				content:content,
+				date:new Date(),
+				sender: _self
+			});
+			active.comment = '';
 		}
 
 		$scope.getComment = function(active){
-			console.log(active);
 			activeInfo.getComment(active._id).then(function(messages){
 				active.comments = messages;
 			});

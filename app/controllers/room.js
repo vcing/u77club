@@ -180,13 +180,13 @@ function room(){
 					if(result){
 						var _rooms = [];
 						_.forEach(rooms,function(room,index){
-							_rooms[index] = {};
-							_rooms[index]._id = room._id;
-							_rooms[index].name = room.name;
-							_rooms[index].description = room.description;
-							_rooms[index].owner = room.owner;
-							_rooms[index].created = room.created;
-							_rooms[index].users = room.users;
+							_rooms[index]               = {};
+							_rooms[index]._id           = room._id;
+							_rooms[index].name          = room.name;
+							_rooms[index].description   = room.description;
+							_rooms[index].owner         = room.owner;
+							_rooms[index].created       = room.created;
+							_rooms[index].users         = room.users;
 							_rooms[index].messageRemind = result[room._id];
 						});
 						req.socket.emit('room:listbyids',_rooms);	

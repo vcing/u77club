@@ -71,7 +71,6 @@ function active(){
 			if(req.param('content')){
 				// 如果有内容则为发评论
 				models.active.findById(req.param('_id')).exec(errorHandle(req,type,function(active){
-					console.log(active);
 					if(!active){
 						return false;
 					}
@@ -83,14 +82,15 @@ function active(){
 					}
 					var msg = new models.message(options);
 					msg.save(errorHandle(req,type,function(){
-						app.io.to(active.room).emit('message:new',{
-							sender:req.session.user,
-							room:msg.room,
-							date:msg.date,
-							content:msg.content,
-							_id:msg._id,
-							active:active
-						});
+						// 聊天室内显示动态的评论
+						// app.io.to(active.room).emit('message:new',{
+						// 	sender:req.session.user,
+						// 	room:msg.room,
+						// 	date:msg.date,
+						// 	content:msg.content,
+						// 	_id:msg._id,
+						// 	active:active
+						// });
 					}));	
 				}));
 			}else{

@@ -53,7 +53,7 @@
 						</div>
 						<div class="comment" ng-class="{true:'show'}[message.active.showComment]">
 							<textarea atwho ng-model="message.active.comment"></textarea>
-							<a class="btn btn-warning submit" ng-click='sendComment(message.active._id,message.active.comment)'>评论</a>
+							<a class="btn btn-warning submit" ng-click='sendComment(message.active,message.active.comment)'>评论</a>
 							<ul class="list">
 								<li ng-repeat="comment in message.active.comments">
 									<div class="avatar">
@@ -65,7 +65,7 @@
 										</div>
 										<div class="info">
 											<span class='time'>{{comment.date|dateFromNow}}</span>
-											<div class="buttons">
+											<div class="buttons" ng-if="self._id != comment.sender._id">
 												<a href="">举报</a>
 												<a href="">回复</a>
 												<a href="">点赞</a>
@@ -100,7 +100,7 @@
 						</div>
 						<div class="comment" ng-class="{true:'show'}[message.active.showComment]">
 							<textarea atwho ng-model="message.active.comment"></textarea>
-							<a class="btn btn-warning submit" ng-click='sendComment(message.active._id,message.active.comment)'>评论</a>
+							<a class="btn btn-warning submit" ng-click='sendComment(message.active,message.active.comment)'>评论</a>
 							<ul class="list">
 								<li ng-repeat="comment in message.active.comments">
 									<div class="avatar">
@@ -112,7 +112,7 @@
 										</div>
 										<div class="info">
 											<span class='time'>{{comment.date|dateFromNow}}</span>
-											<div class="buttons">
+											<div class="buttons" ng-if="self._id != comment.sender._id">
 												<a href="">举报</a>
 												<a href="">回复</a>
 												<a href="">点赞</a>

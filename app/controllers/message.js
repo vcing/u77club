@@ -32,9 +32,22 @@ function message(){
 		},
 		list:function(req,res){
 			var type = 'room message list';
-			var options = {
-				room:req.param('_id')
-			}
+			var options = {"$and":[
+	            {room:req.param('_id')},
+	            {"$or":[
+	                {
+	                    "$and":[
+	                        {active:{"$ne":null}},
+	                        {content:''}
+	                    ]
+	                },
+	                {
+	                    active:null
+	                }
+	    
+	            ]}
+	        ]}
+
 
 			if(req.param('date')){
 				var date = new Date(req.param('date'));
