@@ -270,13 +270,13 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 
 		$scope.send = function(){
 			// 处理回车
-			$scope.text = $scope.text.replace(/\n/g,'<br>');
-			if($scope.text == ''){
-				alert('请输入内容');
-			}else{
-				messageNew.emit({_id:roomId,content:$scope.text})
-				$scope.text = '';	
-			}
+			// $scope.text = $scope.text.replace(/\n/g,'<br>');
+			// if($scope.text == ''){
+			// 	alert('请输入内容');
+			// }else{
+			messageNew.emit({_id:roomId,content:$scope.text})
+			$scope.text = '';	
+			// }
 		}
 
 		$scope.sendComment = function(active,content){
@@ -302,10 +302,11 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 				controller:'activeNewCtrl'
 			});
 
-			newActiveModal.result.then(function(content){
+			newActiveModal.result.then(function(result){
 				var options = {
 					_id:roomId,
-					content:content
+					title:result.title,
+					content:result.content
 				}
 				activeNew.emit(options);
 			});

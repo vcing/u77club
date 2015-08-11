@@ -42,15 +42,6 @@ app.config(['$stateProvider','$urlRouterProvider',
 					}
 				}
 			})
-			.state('valid',{
-				url:'/valid/:id/:name',
-				views:{
-					'main':{
-						template:'room/validDirect.thml',
-						controller:'roomValidDirectCtrl',
-					}
-				}
-			})
 			.state('main.active',{
 				url:'active/:activeId',
 				views:{
@@ -60,6 +51,16 @@ app.config(['$stateProvider','$urlRouterProvider',
 					}
 				}
 			})
+			.state('valid',{
+				url:'/valid/:id/:name',
+				views:{
+					'main':{
+						template:'room/validDirect.thml',
+						controller:'roomValidDirectCtrl',
+					}
+				}
+			})
+			
 		$urlRouterProvider.when("", "/");
 		$urlRouterProvider.otherwise('/');
 

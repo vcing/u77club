@@ -8,3 +8,18 @@ app.directive('activeList',function(){
 		}
 	};
 });
+
+app.directive('singleActive',function(){
+	return {
+		restrict:'A',
+		templateUrl:'/active/single.html',
+		controller:'activeSingleCtrl',
+		scope:{
+			active:'=singleActive',
+			sender:'=sender'
+		},
+		link:function($scope,element,attrs){
+
+		}
+	};
+});

@@ -25,6 +25,7 @@
 						<div class="text" ng-bind-html="message.content | html"></div>
 					</div>
 				</div>
+
 				<div ng-if="message.active && message.content">
 				<!-- 回复动态 -->
 					<img class='avatar' ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar" ng-click='openPrivateMessage(message.sender._id)'>
@@ -33,104 +34,17 @@
 						<span class='time'>{{message.date | dateFromNow}}</span>
 						<div class="text" ng-bind-html="message.content | html"></div>
 					</div>
-					<div class="block" style="margin-left:40px">
-						<div class="top">
-							<div class='avatar'><img width="50" height="50" ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar"></div>
-							<div class="detail">
-								<div class="author">
-									<a class="nickname" ng-bind="message.sender.nickname"></a>
-									<a class="title"></a>
-								</div>
-								<div class="content" ng-bind="message.active.content"></div>
-								<span class="time" ng-bind="message.active.date|dateFromNow"></span>
-							</div>
-						</div>
-						<div class="bottom">
-							<a >收藏</a>
-							<a >转发</a>
-							<a ng-click="message.active.showComment=!message.active.showComment;getComment(message.active)">评论</a>
-							<a >点赞</a>
-						</div>
-						<div class="comment" ng-class="{true:'show'}[message.active.showComment]">
-							<textarea atwho ng-model="message.active.comment"></textarea>
-							<a class="btn btn-warning submit" ng-click='sendComment(message.active,message.active.comment)'>评论</a>
-							<ul class="list">
-								<li ng-repeat="comment in message.active.comments">
-									<div class="avatar">
-										<img width="30" height="30" ng-src="http://img.u77.com/avatar/{{comment.sender.avatar}}!avatar">
-									</div>
-									<div class="detail">
-										<div class="content">
-											<span class="author" ng-bind="comment.sender.nickname"></span>：{{comment.content}}
-										</div>
-										<div class="info">
-											<span class='time'>{{comment.date|dateFromNow}}</span>
-											<div class="buttons" ng-if="self._id != comment.sender._id">
-												<a href="">举报</a>
-												<a href="">回复</a>
-												<a href="">点赞</a>
-											</div>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-
+					<div class="block" style="margin-left:40px" single-active></div>
 				</div>
+
 				<div ng-if="message.active && !message.content">
 				<!-- 新动态 -->
-					<div class="block" >
-						<div class="top">
-							<div class='avatar'><img width="50" height="50" ng-src="http://img.u77.com/avatar/{{message.sender.avatar}}!avatar"></div>
-							<div class="detail">
-								<div class="author">
-									<a class="nickname" ng-bind="message.sender.nickname"></a>
-									<a class="title"></a>
-								</div>
-								<div class="content" ng-bind="message.active.content"></div>
-								<span class="time" ng-bind="message.active.date|dateFromNow"></span>
-							</div>
-						</div>
-						<div class="bottom">
-							<a >收藏</a>
-							<a >转发</a>
-							<a ng-click="message.active.showComment=!message.active.showComment;getComment(message.active)">评论</a>
-							<a >点赞</a>
-						</div>
-						<div class="comment" ng-class="{true:'show'}[message.active.showComment]">
-							<textarea atwho ng-model="message.active.comment"></textarea>
-							<a class="btn btn-warning submit" ng-click='sendComment(message.active,message.active.comment)'>评论</a>
-							<ul class="list">
-								<li ng-repeat="comment in message.active.comments">
-									<div class="avatar">
-										<img width="30" height="30" ng-src="http://img.u77.com/avatar/{{comment.sender.avatar}}!avatar">
-									</div>
-									<div class="detail">
-										<div class="content">
-											<span class="author" ng-bind="comment.sender.nickname"></span>：{{comment.content}}
-										</div>
-										<div class="info">
-											<span class='time'>{{comment.date|dateFromNow}}</span>
-											<div class="buttons" ng-if="self._id != comment.sender._id">
-												<a href="">举报</a>
-												<a href="">回复</a>
-												<a href="">点赞</a>
-											</div>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-
-
+					<div class="block" single-active='message.active' sender='message.sender'></div>
 				</div>
 			</li>
 		</ul>
 		<div class="editor">
-			<textarea atwho class="input" ng-model='text'></textarea>
+			<div atwho class="input" ng-model='text' contentEditable='true'></div>
 			<button type="submit" class="btn btn-info submit" ng-click='send()'>发送</button>
 		</div>
 	</div>

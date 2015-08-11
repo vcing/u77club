@@ -19,6 +19,7 @@ function active(){
 			var options = {
 				room:req.param('_id'),
 				sender:req.session.user._id,
+				title:req.param('title'),
 				content:req.param('content')
 			}
 			var active = new models.active(options);
@@ -35,8 +36,7 @@ function active(){
 						sender:req.session.user,
 						room:msg.room,
 						date:msg.date,
-						content:msg.content,
-						active:active._id,
+						active:active,
 						_id:msg._id
 					});
 				}));
@@ -54,9 +54,9 @@ function active(){
 			}
 		},
 		info:function(req,res){
-			models.active.findById(req.param('_id'),function(active){
+			models.active.findById(req.param('_id')).populate('sender').exec(errorHandle(req,type,function(active){
 				req.socket.emit(type+':info',active);
-			});
+			}));
 		},
 		support:function(req,res){
 

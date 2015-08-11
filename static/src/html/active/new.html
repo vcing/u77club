@@ -3,7 +3,8 @@
 	<h4 class='modal-title'>发布动态</h4>
 </div>
 <div class="modal-body">
-	<textarea class='form-control' ng-model='content' style="resize:none;min-height:300px"></textarea>
+	<input type='text' class='title form-control' ng-model='title' placeholder='标题'>
+	<div class='form-control' contenteditable='true' ng-model='content' style="resize:none;min-height:300px;margin-top:20px;" placeholder='内容'></div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
