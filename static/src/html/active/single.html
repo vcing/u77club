@@ -11,14 +11,16 @@
 	</div>
 </div>
 <div class="bottom">
-	<a >收藏</a>
+	<a ng-if="!active.isFavorite" ng-click="favorite()">收藏</a>
+	<a ng-if="active.isFavorite">已收藏</a>
 	<a >转发</a>
-	<a ng-click="active.showComment=!active.showComment;getComment(active)">评论</a>
-	<a >点赞</a>
+	<a ng-click="active.showComment=!active.showComment;getComment()">评论</a>
+	<a ng-if="!active.isSupport" ng-click="support()">点赞<span ng-bind="active.support" ng-show="active.support != 0"></span></a>
+	<a ng-if="active.isSupport">已赞<span ng-bind="active.support" ng-show="active.support != 0"></span></a>
 </div>
 <div class="comment" ng-class="{true:'show'}[active.showComment]">
 	<div class='input' atwho ng-model="active.comment" contenteditable='true'></div>
-	<a class="btn btn-warning submit" ng-click='sendComment(active,active.comment)'>评论</a>
+	<a class="btn btn-warning submit" ng-click='sendComment(active.comment)'>评论</a>
 	<ul class="list">
 		<li ng-repeat="comment in active.comments">
 			<div class="avatar">

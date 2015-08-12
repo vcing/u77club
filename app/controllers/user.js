@@ -44,6 +44,7 @@ function user(){
 			}else{
 				req.session.user = user;
 				req.session.save();
+				models.userInfo.create({userId:user._id});
 				res.redirect('/index.html');
 			}
 		});
@@ -56,11 +57,28 @@ function user(){
 
 	app.io.route(type,{
 		self:function(req,res){
-			models.user.findById(req.session.user._id).exec(errorHandle(req,type,function(user){
-				req.session.user = user;
-				req.session.save();
-				req.socket.emit(type+':self',user);
-			}))
+			if(req.session.user){
+				models.user.findById(req.session.user._id).exec(errorHandle(req,type,function(user){
+					models.userInfo.findByUser(user._id).then(function(data){
+						var _user = {
+							_id:user._id,
+							username:user.username,
+							email:user.email,
+							nickname:user.nickname,
+							messages:user.messages,
+							rooms:user.rooms,
+							avatar:user.avatar,
+							support:data.support,
+							favorite:data.favorite
+						}
+						req.session.user = user;
+						req.session.save();
+						req.socket.emit(type+':self',_user);
+					});
+				}));
+			}else{
+				req.socket.emit('system:user',7);
+			}
 		},
 		privateList:function(req,res){
 			var type = 'privateList';

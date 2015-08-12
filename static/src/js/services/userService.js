@@ -10,13 +10,14 @@ app.service('userSelf',['socket','$q','roomListByIds',function(socket,$q,roomLis
 		});
 	}
 	socket.addListener('user:self',function(data){
+		_user = data;
 		fresh(data);
 	});
 
-	socket.addListener('user:online',function(data){
-		// fresh(data);
-		_user = data;
-	});
+	// socket.addListener('user:online',function(data){
+	// 	// fresh(data);
+	// 	_user = data;
+	// });
 
 	return {
 		emit:function(options){

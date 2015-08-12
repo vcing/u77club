@@ -143,7 +143,7 @@ function room(){
 					user.rooms = [req.param('_id')];
 				}
 				user.save(errorHandle(req,type,function(){
-					req.session.user = user;
+					req.session.user.rooms = user.rooms;
 					req.session.save();
 					if(is_subscribe){
 						// 如果是加密房间 则验证

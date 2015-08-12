@@ -9,7 +9,7 @@ app.service('messageNew',['socket','messageList','activeList','activeInfo',funct
 			messageList.setList(data.room,_list);
 		}
 
-		if(data.active && data.content == ''){
+		if(data.active && !data.content){
 			angular.forEach(newActiveListener,function(fn){
 				fn();
 			});

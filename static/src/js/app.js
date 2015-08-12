@@ -89,7 +89,6 @@ app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','
 
 		// 绑定锚点跳转函数
 		$rootScope.scrollTo = function(hash){
-			console.log(hash);
 			$location.hash(hash);
 			$anchorScroll();
 		}

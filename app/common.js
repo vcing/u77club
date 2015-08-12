@@ -49,7 +49,7 @@ module.exports = {
 	 * @param {obj} socket socket对象
 	 */
 	addOnline:function(socket){
-		socket.emit('user:online',socket.session.user);
+		// socket.emit('user:online',socket.session.user);
 		if(onlineList[socket.session.user._id]){
 			onlineList[socket.session.user._id].push(socket.id);
 		}else{

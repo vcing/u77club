@@ -59,13 +59,49 @@ function active(){
 			}));
 		},
 		support:function(req,res){
-
+			models.userInfo.findByUser(req.session.user._id).then(function(userInfo){
+				if(userInfo){
+					if(userInfo.support){
+						if(_.indexOf(userInfo.support.toString().split(','),req.param('_id')) == -1){
+							userInfo.support.push(req.param('_id'));
+							models.active.support(req.param('_id'));
+						}
+					}else{
+						userInfo.support = [req.param('_id')];
+						models.active.support(req.param('_id'));
+					}
+					userInfo.save(errorHandle(req,type));
+				}else{
+					var options = {
+						userId:req.session.user._id,
+						support:[req.param('_id')]
+					}
+					models.userInfo.create(options);
+					models.active.support(req.param('_id'));
+				}
+			});
+			
 		},
 		repost:function(req,res){
 
 		},
-		collect:function(req,res){
-
+		favorite:function(req,res){
+			models.userInfo.findByUser(req.session.user._id).then(function(userInfo){
+				if(userInfo){
+					if(userInfo.favorite && _.indexOf(userInfo.favorite.toString().split(','),req.param('_id')) == -1){	
+						userInfo.favorite.push(req.param('_id'));
+					}else{
+						userInfo.favorite = [req.param('_id')];
+					}
+					userInfo.save();
+				}else{
+					var options = {
+						userId:req.session.user._id,
+						favorite:[req.param('_id')]
+					}
+					models.userInfo.create(options);
+				}
+			});
 		},
 		comment:function(req,res){
 			if(req.param('content')){

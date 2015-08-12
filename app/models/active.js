@@ -23,6 +23,10 @@ var ActiveSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    support:{
+        type:Number,
+        default: 0
+    },
     original: {
     	type: ObjectId,
     	ref: 'Active'
@@ -44,6 +48,10 @@ ActiveSchema.statics.findByRoom = function(_id){
 
 ActiveSchema.statics.findBySender = function(_id){
     return this.find({sender:_id}).populate('sender').sort('-date').exec();
+}
+
+ActiveSchema.statics.support = function(_id){
+    return this.findOneAndUpdate({_id:_id},{'$inc':{support:1}}).exec();
 }
 
 module.exports = mongoose.model('Active', ActiveSchema);

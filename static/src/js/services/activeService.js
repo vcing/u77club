@@ -70,6 +70,12 @@ app.service('activeInfo',['socket','$q',
 			},
 			sendComment:function(_id,content){
 				socket.emit('active:comment',{_id:_id,content:content});
+			},
+			support:function(_id){
+				socket.emit('active:support',{_id:_id});
+			},
+			favorite:function(_id){
+				socket.emit('active:favorite',{_id:_id});
 			}
 		}
 	}]);

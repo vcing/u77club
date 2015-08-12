@@ -269,31 +269,10 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 
 
 		$scope.send = function(){
-			// 处理回车
-			// $scope.text = $scope.text.replace(/\n/g,'<br>');
-			// if($scope.text == ''){
-			// 	alert('请输入内容');
-			// }else{
 			messageNew.emit({_id:roomId,content:$scope.text})
 			$scope.text = '';	
-			// }
 		}
-
-		$scope.sendComment = function(active,content){
-			activeInfo.sendComment(active._id,content);
-			active.comments.unshift({
-				content:content,
-				date:new Date(),
-				sender: _self
-			});
-			active.comment = '';
-		}
-
-		$scope.getComment = function(active){
-			activeInfo.getComment(active._id).then(function(messages){
-				active.comments = messages;
-			});
-		}
+		
 
 		$scope.showNewActive = function(){
 			var newActiveModal = $modal.open({
