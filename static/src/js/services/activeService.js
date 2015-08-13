@@ -76,6 +76,9 @@ app.service('activeInfo',['socket','$q',
 			},
 			favorite:function(_id){
 				socket.emit('active:favorite',{_id:_id});
+			},
+			repost:function(options){
+				socket.emit('active:repost',options);
 			}
 		}
 	}]);

@@ -58,8 +58,10 @@ app.service('roomInfo',['socket','$q','roomUpdateActive',function(socket,$q,room
 
 app.service('roomListByIds',['socket',function(socket){
 	var _cb = {};
+	var list;
 
 	socket.addListener('room:listbyids',function(data){
+		list = data;
 		angular.forEach(_cb,function(cb){
 			cb(data);
 		});
@@ -82,6 +84,9 @@ app.service('roomListByIds',['socket',function(socket){
 				return false;
 			}
 		},
+		list:function(){
+			return list;
+		}
 	}
 }]);
 

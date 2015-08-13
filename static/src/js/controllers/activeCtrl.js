@@ -31,17 +31,28 @@ app.controller('activeInfoCtrl',['$scope','activeInfo','$state','$stateParams','
 		
 	}]);
 
-app.controller('activeSingleCtrl',['$scope','activeInfo','userSelf',
-	function($scope,activeInfo,userSelf){
+app.controller('activeSingleCtrl',['$scope','activeInfo','userSelf','$modal',
+	function($scope,activeInfo,userSelf,$modal){
 		var _self = userSelf.self();
-
-		if(_.indexOf(_self.support,$scope.active._id) != -1){
-			$scope.active.isSupport = true;
+		if(_self){
+			init();
+		}else{
+			userSelf.promise().then(function(self){
+				_self = self;
+				init();
+			});
 		}
 
-		if(_.indexOf(_self.favorite,$scope.active._id) != -1){
-			$scope.active.isFavorite = true;
+		function init(){
+			if(_.indexOf(_self.support,$scope.active._id) != -1){
+				$scope.active.isSupport = true;
+			}
+
+			if(_.indexOf(_self.favorite,$scope.active._id) != -1){
+				$scope.active.isFavorite = true;
+			}	
 		}
+		
 
 
 		userSelf.addListener('activeSingleCtrl',function(user){
@@ -82,4 +93,41 @@ app.controller('activeSingleCtrl',['$scope','activeInfo','userSelf',
 			_self.favorite.push($scope.active._id);
 			userSelf.setSelf(_self);
 		}
+
+		$scope.repost = function(){
+			var validSubscriptModal = $modal.open({
+				animation:true,
+				templateUrl:'/active/repost.html',
+				controller:'activeRepostCtrl',
+				resolve:{
+					active:function(){
+						return $scope.active;
+					}
+				}
+			});
+		}
 	}])
+
+app.controller('activeRepostCtrl',['$scope','$modalInstance','active','roomListByIds','activeInfo',
+	function($scope,$modalInstance,active,roomListByIds,activeInfo){
+		$scope.list = roomListByIds.list();
+		$scope.active = active;
+		$scope.dest = {
+			name:'请选择房间'
+		}
+		$scope.cancel = function(){
+			$modalInstance.dismiss('cancel');
+		}
+
+		$scope.submit = function(){
+			
+			var options = {
+
+			}
+			activeInfo.repost(options);
+		}
+
+		$scope.chose = function(dest){
+			$scope.dest = dest;
+		}
+	}]);

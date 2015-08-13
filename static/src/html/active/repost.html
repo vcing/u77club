@@ -1,0 +1,19 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">×</button>
+	<h4 class='modal-title'>转发动态</h4>
+</div>
+<div class="modal-body" id="repost">
+	<div class="btn-group" dropdown is-open="status.isopen">
+		<label class='tip'>转发至:</label><button id="choose-dest" class='btn btn-primary' dropdown-toggle ng-bind="dest.name"></button>
+		<ul class="dropdown-menu" role='menu' aria-labelledby="choose-dest">
+			<li role="menuitem" ng-repeat="room in list"><a ng-click='chose(room)' ng-bind="room.name"></a></li>
+		</ul>
+	</div>
+	
+	<div class='form-control repost-content' contenteditable='true' ng-model='content' placeholder='内容'></div>
+	<div class="repost-title" ng-bind="active.title"></div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+	<button type="submit" class="btn btn-primary submit" ng-click="submit()" ng-disabled="content == ''" disabled="disabled">确定</button>
+</div>

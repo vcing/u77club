@@ -1583,3 +1583,38 @@ body{
 		}
 	}
 }
+
+
+// 转发弹框
+#repost{
+
+	.tip{
+		float: left;
+		line-height: 32px;
+		margin-right: 10px;
+	}
+
+	#choose-dest{
+		border-radius:2px;
+		padding: 5px 10px;
+	}
+
+	.repost-title{
+		background:#f2f2f5;
+		position: relative;
+	    _zoom: 1;
+	    padding: 5px 10px;
+	    line-height: 20px;
+	    border-radius: 2px;
+	}
+
+	.repost-content{
+		resize:none;
+		min-height:100px;
+		margin-bottom:20px;
+	}
+
+	.dropdown-menu a{
+		cursor: pointer;
+	}
+}
