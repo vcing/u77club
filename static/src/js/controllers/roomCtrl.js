@@ -1,19 +1,33 @@
 app.controller('roomListCtrl',['$scope','$state','roomList','roomListByIds','userSelf','roomSubscribe','$modal','roomInfo',
 	function($scope,$state,roomList,roomListByIds,userSelf,roomSubscribe,$modal,roomInfo){
 	var _name = 'roomlistCtrl';
-	if(roomList.checkListener(_name)){
-		$scope.roomList = roomList.list();
-	}else{
-		roomList.addListener(_name,function(data){
-			angular.forEach(data,function(room){
-				if($.inArray(room._id,userSelf.self().rooms) != -1){
-					room.isSubscribe = true;
-				}
-			});
-			$scope.roomList = data;
-		});
-		roomList.emit();
+	$scope.self = userSelf.self();
+
+	if(!$scope.self){
+		userSelf.emit();
 	}
+
+	userSelf.addListener(_name,function(self){
+		$scope.self = self;
+	})
+
+	$scope.$watch('self',function(n,o,scope){
+		if($scope.self){
+			if(roomList.checkListener(_name)){
+				$scope.roomList = roomList.list();
+			}else{
+				roomList.addListener(_name,function(data){
+					angular.forEach(data,function(room){
+						if($.inArray(room._id,$scope.self.rooms) != -1){
+							room.isSubscribe = true;
+						}
+					});
+					$scope.roomList = data;
+				});
+				roomList.emit();
+			}		
+		}
+	});
 
 
 	$scope.toggleSubscript = function(_id,hasPassword){
@@ -155,14 +169,13 @@ app.controller('roomAddCtrl',['$scope','roomCreate','roomList','$state','$modalI
 
 app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messageList','roomInfo','userSelf','roomSubscribe','roomList','roomListByIds','roomUserList','roomJoin','roomLeave','permissionValid','$modal','activeNew','activeList','activeInfo',
 	function($scope,$state,$stateParams,messageNew,messageList,roomInfo,userSelf,roomSubscribe,roomList,roomListByIds,roomUserList,roomJoin,roomLeave,permissionValid,$modal,activeNew,activeList,activeInfo){
-		var _self             = userSelf.self();
 		var _name             = 'roomCtrl';
 		var roomId            = $stateParams.roomId;
 		$scope.active         = 'actives';
 		$scope.newActiveCount = 0;
-		$scope.self           = _self;
+		$scope.self           = userSelf.self();
 
-		if(!_self){
+		if(!$scope.self){
 			userSelf.emit();
 		}
 		// 从这里开始
@@ -186,17 +199,22 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 		}
 
 		function init(room){
-			if($.inArray(roomId,_self.rooms) == -1){
-				var options = {_id:roomId};
-				if(room.type == 2 || room.type == 4){
-					options.hasPassword = true;
+			$scope.$watch('self',function(n,o,scope){
+				if($scope.self){
+					if($.inArray(roomId,$scope.self.rooms) == -1){
+						var options = {_id:roomId};
+						if(room.type == 2 || room.type == 4){
+							options.hasPassword = true;
+						}
+						roomSubscribe.promise(options)
+							.then(function(data){
+								userSelf.emit();
+								roomList.emit();
+							});
+					}		
 				}
-				roomSubscribe.promise(options)
-					.then(function(data){
-						userSelf.emit();
-						roomList.emit();
-					});
-			}
+			});
+			
 			$scope.room = room;
 			if(!messageList.list(roomId))messageList.emit({_id:roomId});
 			if(!roomUserList.list(roomId))roomUserList.emit({_id:roomId});
@@ -211,7 +229,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 
 
 		userSelf.addListener(_name,function(user){
-			_self = user;
+			$scope.self = user;
 			$scope.self = user;
 		});
 		
@@ -321,7 +339,7 @@ app.controller('roomCtrl',['$scope','$state','$stateParams','messageNew','messag
 				}
 
 				// 我发的
-				if(message.sender._id == _self._id){
+				if(message.sender._id == $scope.self._id){
 					message.class += ' own';
 				}
 			});

@@ -9,16 +9,28 @@
 				<a class="nickname" ng-bind="sender.nickname"></a>
 				<a class="title"></a>
 			</div>
-			<a class="title" ng-bind="active.title" ui-sref="main.active({activeId:active._id})"></a>
+			<a ng-if="!active.original" class="title" ng-bind="active.title" ui-sref="main.active({activeId:active._id})"></a>
 			<div class="content" ng-bind="active.content"></div>
+			<div ng-if="active.original._id" class='repost-content'>
+				<a class="title" ng-bind="active.original.title" ui-sref="main.active({activeId:active.original._id})"></a>
+				<div ng-if="active.original.sender._id" class="author" ng-bind="active.original.sender.nickname"></div>
+				<div class="content" ng-bind="active.original.content"></div>
+				<span class="time" ng-bind="active.original.date|dateFromNow"></span>
+				<div class="buttons">
+					<a ng-click="o_repost()">转发<span ng-bind="active.original.repostCount"></span></a>
+					<a ui-sref="main.active({activeId:active.original._id})">评论<span ng-bind="active.original.commentCount"></span></a>
+					<a ng-if="!active.original.isSupport" ng-click="o_support()">点赞<span ng-bind="active.original.support" ng-show="active.original.support != 0"></span></a>
+					<a ng-if="active.original.isSupport">已赞<span ng-bind="active.original.support" ng-show="active.original.support != 0"></span></a>
+				</div>
+			</div>
 			<span class="time" ng-bind="active.date|dateFromNow"></span>
 		</div>
 	</div>
 	<div class="bottom">
 		<a ng-if="!active.isFavorite" ng-click="favorite()">收藏</a>
 		<a ng-if="active.isFavorite">已收藏</a>
-		<a ng-click="repost()">转发</a>
-		<a ng-click="active.showComment=!active.showComment;getComment()">评论</a>
+		<a ng-click="repost()">转发<span ng-bind="active.repostCount"></span></a>
+		<a ng-click="active.showComment=!active.showComment;getComment()">评论<span ng-bind="active.commentCount"></span></a>
 		<a ng-if="!active.isSupport" ng-click="support()">点赞<span ng-bind="active.support" ng-show="active.support != 0"></span></a>
 		<a ng-if="active.isSupport">已赞<span ng-bind="active.support" ng-show="active.support != 0"></span></a>
 	</div>

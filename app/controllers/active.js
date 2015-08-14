@@ -54,6 +54,9 @@ function active(){
 			}
 		},
 		info:function(req,res){
+			// models.active.info(req,req.param('_id')).then(function(active){
+			// 	req.socket.emit('active:info',active);	
+			// });
 			models.active.findById(req.param('_id')).populate('sender').exec(errorHandle(req,type,function(active){
 				req.socket.emit(type+':info',active);
 			}));
@@ -83,7 +86,40 @@ function active(){
 			
 		},
 		repost:function(req,res){
+			var original = req.param('original');
+			var dest     = req.param('dest');
+			var content  = req.param('content');
+			var src      = req.param('src');
 
+			var options = {
+				room:dest._id,
+				sender:req.session.user._id,
+				title:'repost',
+				content:content,
+				original:original._id
+			}
+			var active = new models.active(options);
+
+			active.save(errorHandle(req,type,function(){
+				var _options = {
+					room:dest._id,
+					sender:req.session.user._id,
+					content:'',
+					active:active._id
+				}
+				var msg = new models.message(_options);
+				msg.save(errorHandle(req,type,function(){
+					app.io.to(dest._id).emit('message:new',{
+						sender:req.session.user,
+						room:msg.room,
+						date:msg.date,
+						active:active,
+						_id:msg._id
+					});
+				}));
+
+				models.active.repostPlus(src._id);
+			}));
 		},
 		favorite:function(req,res){
 			models.userInfo.findByUser(req.session.user._id).then(function(userInfo){
@@ -127,7 +163,9 @@ function active(){
 						// 	_id:msg._id,
 						// 	active:active
 						// });
-					}));	
+					}));
+
+					models.active.commentPlus(req.param('_id'));
 				}));
 			}else{
 				// 否则为获取评论

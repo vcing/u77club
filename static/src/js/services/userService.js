@@ -61,7 +61,21 @@ app.service('userPrivateList',['socket','$q',
 				socket.emit('user:privateList',options);
 				socket.on('user:privateList',function(data){
 					deffered.resolve(data);
-				})
+				});
+				return deffered.promise;
+			}
+		}
+	}]);
+
+app.service('userInfo',['socket','$q',
+	function(socket,$q){
+		return {
+			promise:function(_id){
+				var deffered = $q.defer();
+				socket.emit('user:info',{_id:_id});
+				socket.on('user:info',function(data){
+					deffered.resolve(data);
+				});
 				return deffered.promise;
 			}
 		}

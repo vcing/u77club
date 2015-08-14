@@ -60,6 +60,42 @@ app.config(['$stateProvider','$urlRouterProvider',
 					}
 				}
 			})
+			.state('main.setting',{
+				url:'setting',
+				views:{
+					'content':{
+						templateUrl:'setting.html',
+						controller:'settingCtrl'
+					}
+				}
+			})
+			.state('main.favorite',{
+				url:'favorite',
+				views:{
+					'content':{
+						templateUrl:'favorite.html',
+						controller:'favoriteCtrl'
+					}
+				}
+			})
+			.state('main.discover',{
+				url:'discover',
+				views:{
+					'content':{
+						templateUrl:'discover.html',
+						controller:'discoverCtrl'
+					}
+				}
+			})
+			.state('main.profile',{
+				url:'profile',
+				views:{
+					'content':{
+						templateUrl:'profile.html',
+						controller:'profileCtrl'
+					}
+				}
+			})
 			
 		$urlRouterProvider.when("", "/");
 		$urlRouterProvider.otherwise('/');

@@ -9,11 +9,11 @@
 			<li role="menuitem" ng-repeat="room in list"><a ng-click='chose(room)' ng-bind="room.name"></a></li>
 		</ul>
 	</div>
-	
-	<div class='form-control repost-content' contenteditable='true' ng-model='content' placeholder='内容'></div>
-	<div class="repost-title" ng-bind="active.title"></div>
+	<div class='form-control repost-content' contenteditable='true' ng-model='content'></div>
+	<div class="repost-title" ng-bind="active.title" ng-if="!active.original"></div>
+	<div class="repost-title" ng-bind="active.original.title" ng-if="active.original"></div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
-	<button type="submit" class="btn btn-primary submit" ng-click="submit()" ng-disabled="content == ''" disabled="disabled">确定</button>
+	<button type="submit" class="btn btn-primary submit" ng-click="submit()" ng-disabled="content == '' || !dest._id">确定</button>
 </div>
