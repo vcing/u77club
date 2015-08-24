@@ -105,7 +105,7 @@ function user(){
 		},
 		info:function(req,res){
 			var type = 'userInfo';
-			modles.user.findById(req.param('_id')).exec(errorHandle(req,type,function(user){
+			models.user.findById(req.param('_id')).exec(errorHandle(req,type,function(user){
 				req.socket.emit('user:info',user);
 			}))
 		}

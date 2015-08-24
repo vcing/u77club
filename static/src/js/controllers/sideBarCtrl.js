@@ -53,6 +53,7 @@ app.controller('sideBarCtrl',['$scope','$stateParams','userSelf','roomListByIds'
 
 		// 当前激活房间ID
 		$scope.currentRoomId      = $stateParams.roomId;
+		$scope.active             = 'room';
 		$scope.openPrivateMessage = messagePrivate.openPrivateMessage;
 		messagePrivate.addListener(_name,function(){
 			$scope.record = messagePrivate.record();

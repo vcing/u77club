@@ -122,22 +122,28 @@ function active(){
 			}));
 		},
 		favorite:function(req,res){
-			models.userInfo.findByUser(req.session.user._id).then(function(userInfo){
-				if(userInfo){
-					if(userInfo.favorite && _.indexOf(userInfo.favorite.toString().split(','),req.param('_id')) == -1){	
-						userInfo.favorite.push(req.param('_id'));
+			if(req.param('_id')){
+				models.userInfo.findByUser(req.session.user._id).then(function(userInfo){
+					if(userInfo){
+						if(userInfo.favorite && _.indexOf(userInfo.favorite.toString().split(','),req.param('_id')) == -1){	
+							userInfo.favorite.push(req.param('_id'));
+						}else{
+							userInfo.favorite = [req.param('_id')];
+						}
+						userInfo.save();
 					}else{
-						userInfo.favorite = [req.param('_id')];
+						var options = {
+							userId:req.session.user._id,
+							favorite:[req.param('_id')]
+						}
+						models.userInfo.create(options);
 					}
-					userInfo.save();
-				}else{
-					var options = {
-						userId:req.session.user._id,
-						favorite:[req.param('_id')]
-					}
-					models.userInfo.create(options);
-				}
-			});
+				});
+			}else{
+				models.userInfo.findActivesByUser(req.session.user._id).then(function(userInfo){
+					req.socket.emit('active:favorite',userInfo);
+				});
+			}
 		},
 		comment:function(req,res){
 			if(req.param('content')){

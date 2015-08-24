@@ -69,12 +69,24 @@ app.service('userPrivateList',['socket','$q',
 
 app.service('userInfo',['socket','$q',
 	function(socket,$q){
+		// 加了个缓存
+		var users = {};
 		return {
 			promise:function(_id){
 				var deffered = $q.defer();
-				socket.emit('user:info',{_id:_id});
+				if(!users[_id]){
+					users[_id] = 'loading';
+					socket.emit('user:info',{_id:_id});
+				}else{
+					if(users[_id] != 'loading'){
+						deffered.resolve(users[_id]);
+					}
+				}
 				socket.on('user:info',function(data){
-					deffered.resolve(data);
+					if(data._id == _id){
+						deffered.resolve(data);
+						users[data._id] = data;
+					}
 				});
 				return deffered.promise;
 			}

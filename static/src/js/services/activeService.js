@@ -7,8 +7,8 @@ app.service('activeNew',['socket',
 		}
 	}]);
 
-app.service('activeList',['socket',
-	function(socket){
+app.service('activeList',['socket','$q',
+	function(socket,$q){
 		var _cb      = {};
 		var _list    = {};
 
@@ -43,6 +43,14 @@ app.service('activeList',['socket',
 			list:function(){
 				return _list;
 			},
+			favoritePromise:function(){
+				var deffered = $q.defer();
+				socket.emit('active:favorite');
+				socket.on('active:favorite',function(data){
+					deffered.resolve(data);
+				});
+				return deffered.promise;
+			},
 			setActives:function(_id,actives){
 				_list[_id] = actives;
 			}
@@ -51,12 +59,23 @@ app.service('activeList',['socket',
 
 app.service('activeInfo',['socket','$q',
 	function(socket,$q){
+		var actives = {};
 		return {
 			promise:function(_id){
 				var deffered = $q.defer();
-				socket.emit('active:info',{_id:_id});
+				if(!actives[_id]){
+					actives[_id] = 'loading';
+					socket.emit('active:info',{_id:_id});
+				}else{
+					if(actives[_id] != 'loading'){
+						deffered.resolve(actives[_id]);
+					}
+				}
 				socket.on('active:info',function(data){
-					deffered.resolve(data);
+					if(_id == data._id){
+						actives[data._id] = data;
+						deffered.resolve(data);
+					}
 				});
 				return deffered.promise;
 			},

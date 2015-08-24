@@ -15,8 +15,7 @@ app.directive('singleActive',function(){
 		templateUrl:'/active/single.html',
 		controller:'activeSingleCtrl',
 		scope:{
-			active:'=singleActive',
-			sender:'=sender'
+			active:'=singleActive'
 		},
 		link:function($scope,element,attrs){
 

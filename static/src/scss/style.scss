@@ -16,6 +16,7 @@
 	padding: 20px;
 	width: 100%;
 	overflow-y: scroll;
+	position: relative;
 }
 
 %active-block{
@@ -796,7 +797,65 @@ body{
 		}
 
 		.favorite{
+			overflow: hidden;
+			background: #f2f2f5;
 			@extend %main-wrap;
+			@extend %active-block;
+
+			.block{
+				margin-bottom: 20px;
+			}
+
+			.header{
+			    position: absolute;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    background:#fff;
+
+			    h3{
+			    	text-align: center;
+			    	margin: 10px;
+			    }
+
+			    .toggle{
+					position: absolute;
+					right: 20px;
+					top: 12px;
+					cursor: pointer;
+
+					.fa{
+						color:#fff;
+					}
+
+					.active{
+						color:#333;
+					}
+			    }
+			}
+
+			.supports,
+			.favorites{
+				position: absolute;
+				width: 100%;
+				top: 48px;
+				bottom: 0;
+				overflow-y: scroll;
+				padding: 20px;
+				@extend %animate;
+			}
+
+			.supports{
+				left: 100%;
+			}
+
+			.favorites{
+				left: -100%;
+			}
+
+			.active{
+				left: 0;
+			}
 		}
 	}
 }

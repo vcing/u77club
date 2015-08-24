@@ -11,7 +11,7 @@
 </div>
 <div class="tabs-wrap">
 	<ul class="tabs-menu"  ng-class="{'menu':'active'}[tab]">
-		<li class="tab menu" ng-class="{true:'active'}[currentRoomId != undefined]">
+		<li class="tab menu" ng-class="{true:'active'}[active == 'room']">
 			<a  ng-click="tab='room';active='room'">
 				<span class="title">房间</span>
 	            <span class="alert">
@@ -21,7 +21,7 @@
 			</a>
 		</li>
 		<li class="tab menu">
-			<a ng-click="tab='friend';active='friend'" ng-class="{true:'active'}[currentFriendId != undefined]">
+			<a ng-click="tab='friend'" ng-class="{true:'active'}[currentFriendId != null]">
 				<span class="title">消息</span>
 	            <span class="alert">
 	                <span class="mentions"></span>

@@ -110,6 +110,14 @@ app.run(['socket','userSelf','$rootScope','$urlRouter','$state','$stateParams','
 		// 根作用于绑定 路由状态
 		$rootScope.$state = $state;
 		$rootScope.$stateParams = $stateParams;
+
+		$rootScope.userSelf = userSelf.self();
+		if(!$rootScope.userSelf){
+			userSelf.promise().then(function(self){
+				$rootScope.self = self;
+			});
+		}
+		
 		$rootScope.$on('$locationChangeSuccess',function(evt){
 			if(!$stateParams.roomId)roomInfo.info('list');
 			evt.preventDefault();

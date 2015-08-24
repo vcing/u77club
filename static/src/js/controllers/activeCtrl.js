@@ -45,10 +45,22 @@ app.controller('activeSingleCtrl',['$scope','activeInfo','userSelf','$modal','us
 
 
 
+		/**
+		 * 取消了作者传入
+		 * 统一重新从服务器获取
+		 * 获取时 设置了客户端缓存
+		 */
 		function init(){
 			$scope.$watch('active',function(n,o,$scope){
 				if($scope.active){
-					$scope.active.sender = $scope.sender;
+					// 加载作者
+					if(!$scope.active.sender._id){
+						userInfo.promise($scope.active.sender).then(function(user){
+							$scope.sender = user;
+						});
+					}else{
+						$scope.sender = $scope.active.sender;
+					}
 
 					if(_.indexOf(_self.support,$scope.active._id) != -1){
 						$scope.active.isSupport = true;

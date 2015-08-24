@@ -1,1 +1,18 @@
-<div class="favorite">收藏夹页面</div>
+<div class="favorite">
+	<div class="header">
+		<h3 ng-show="active=='support'">我赞过的</h3>
+		<h3 ng-show="active=='favorite'">我收藏的</h3>
+		<div class="toggle">
+			<i class="fa fa-chevron-left" ng-class="{'support':'active'}[active]" ng-click="active='favorite'"></i>
+			<span ng-show="active=='favorite'" ng-click="active='support'">我赞过的</span>
+			<span ng-show="active=='support'" ng-click="active='favorite'">我收藏的</span>
+			<i class="fa fa-chevron-right" ng-class="{'favorite':'active'}[active]" ng-click="active='support'"></i>
+		</div>
+	</div>
+	<div class="favorites" ng-class="{'favorite':'active'}[active]">
+		<div class="block" single-active='active' ng-repeat="active in favorite"></div>
+	</div>
+	<div class="supports"  ng-class="{'support':'active'}[active]">
+		<div class="block" single-active='active' ng-repeat="active in support"></div>
+	</div>
+</div>

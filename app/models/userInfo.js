@@ -29,4 +29,8 @@ UserInfoSchema.statics.findByUser = function(_id){
 	return this.findOne({userId:_id}).exec();
 }
 
+UserInfoSchema.statics.findActivesByUser = function(_id){
+	return this.findOne({userId:_id}).populate('support favorite').exec();
+}
+
 module.exports = mongoose.model('UserInfo', UserInfoSchema);

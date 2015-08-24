@@ -86,11 +86,11 @@ ActiveSchema.set('toJSON', {
 // }
 
 ActiveSchema.statics.findByRoom = function(_id){
-    return this.find({room:_id}).populate('sender').sort('-date').exec();
+    return this.find({room:_id}).sort('-date').exec();
 }
 
 ActiveSchema.statics.findBySender = function(_id){
-    return this.find({sender:_id}).populate('sender').sort('-date').exec();
+    return this.find({sender:_id}).sort('-date').exec();
 }
 
 ActiveSchema.statics.support = function(_id){
